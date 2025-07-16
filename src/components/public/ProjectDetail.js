@@ -124,12 +124,6 @@ const ProjectDetail = () => {
                                     </div>
                                 </div>
                                 )}
-                                <div className="col-6">
-                                    <div className="form-group">
-                                        <label htmlFor="statusType">Proje Aktif mi?</label>
-                                        <label className='justifyLabel' id="statusType" name="statusType">{formData.statusType == 'true' ? 'Evet':'Hayır'}</label>
-                                    </div>
-                                </div>
                             </div>
                             <div className="row">
                                 <div className="col-6">
@@ -151,12 +145,15 @@ const ProjectDetail = () => {
                                 <div className="col-12">
                                     <div className="form-group">
                                         <label htmlFor="description">Açıklama</label>
-                                        <label className='justifyLabel'
+                                        {/* <label className='justifyLabel'
                                             id="description"
                                             name="description"
                                         >{formData.description}
                                         
-                                        </label>
+                                        </label> */}
+                                        <div >
+                                            <div dangerouslySetInnerHTML={{ __html: formData.description }} />
+                                        </div>
                                     </div>
                                 </div>
                             </div>

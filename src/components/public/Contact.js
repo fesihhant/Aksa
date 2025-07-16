@@ -79,66 +79,75 @@ const Contact = () => {
             
             {/* "ratingValue": "4.9", google da işletmeye verilen puan 
             "reviewCount": "141" google da işletmeye verilen puan veya yorum sayisi */}
-            </Helmet>
+        </Helmet>
 
             <div className="home-container">
                 <div className="main-content">
                     <Breadcrumbs breadcrumbs={pathnames} />
                     <div className="form-container" >
-                        <form onSubmit={handleSubmit}>
-                            <div className='succes-message' style={{display: showSuccess ? 'block' : 'none'}} >
-                                {formData.succesMessage}
+                        
+                        <div className='row'>
+                            <div className='col-6'>
+                                <form onSubmit={handleSubmit}>
+                                    <div className='succes-message' style={{display: showSuccess ? 'block' : 'none'}} >
+                                        {formData.succesMessage}
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="name">Adınız:</label>
+                                        <input
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            maxLength={250}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="email">E-posta:</label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            maxLength={250}
+                                            required
+                                        />
+                                    </div>
+                                    <div className="form-group">
+                                        <label htmlFor="message">Mesajınız:</label>
+                                        <textarea
+                                            id="message"
+                                            name="message"
+                                            value={formData.message}
+                                            onChange={handleChange}
+                                            rows="10"
+                                            required
+                                        ></textarea>
+                                    </div>
+                                    <div className="form-actions">
+                                        <div className="form-group">
+                                            <label htmlFor='submit' ></label>
+                                            <button id='submit' type="submit" className="submit-button">
+                                                Gönder
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <div className="form-group">
-                                <label htmlFor="name">Adınız:</label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    maxLength={250}
-                                    required
-                                />
+                            <div className='col-4'>
+                                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3015.048200284835!2d29.210003075509068!3d40.91468902518324!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cac4c112ee7bd5%3A0x384117202fbc4b85!2zT3J0YSwgQmVrdGHFnyBTay4gTm86NiBEOjE3LCAzNDg2MCBLYXJ0YWwvxLBzdGFuYnVs!5e0!3m2!1str!2str!4v1749721323356!5m2!1str!2str" 
+                                style={{borderRadius:'10px', border:'2px solid cadetblue'}}
+                                width="500" height="400" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                             </div>
-                            <div className="form-group">
-                                <label htmlFor="email">E-posta:</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    maxLength={250}
-                                    required
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="message">Mesajınız:</label>
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    value={formData.message}
-                                    onChange={handleChange}
-                                    rows="10"
-                                    required
-                                ></textarea>
-                            </div>
-                            <div className="form-actions">
-                                <div className="form-group">
-                                    <label htmlFor='submit' ></label>
-                                    <button id='submit' type="submit" className="submit-button">
-                                        Gönder
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
+                       </div> 
                     </div>
                 </div>
-                
             </div>
         </>
-        );
+    );
 };
 
 export default Contact;

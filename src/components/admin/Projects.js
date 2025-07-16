@@ -1,60 +1,73 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CListContainer from '../htmlComponent/CListContainer';
-import { apiUrl } from '../../utils/utils';
-
+import { useApiCall, useDeleteApiCall } from '../../utils/apiCalls';
+import ModalMessage from '../public/ModalMessage';
 import '../../css/Products.css';
+import { substringValue } from '../../utils/utils';
 
 const Projects = () => {
     const navigate = useNavigate();
     const [projects, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [searchTerm, setSearchTerm] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');    
+    
+    const { apiData, apiError, apiLoading } = useApiCall('/projects', 'GET', null, true);
+    const { apiSuccess, apiError: deleteError, apiLoading: deleteLoading, deleteData } = useDeleteApiCall();
 
     useEffect(() => {
-        
-        const fetchData = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                if (!token) {
-                    navigate('/login'); // Kullanıcıyı giriş sayfasına yönlendir
-                    return;
-                }
-                const response = await fetch(`${apiUrl}/projects`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`, // Token'ı header'a ekle
-                        'Content-Type': 'application/json'
-                    }
-                });
-                const data = await response.json();
+        if (apiData && apiData.success) {
+            if (apiData.projects && apiData.projects.length > 0) {    
+                setData(apiData.projects);
+            } 
+        }
+        if (apiError) {
+            setError(apiError.message || 'Veriler yüklenirken bir hata oluştu');
+        }
+        setLoading(apiLoading);
+    }, [apiData, apiError, apiLoading]);
+    
+    //#region "state management for delete operation"
+    // ...existing state...
+    const [modalOpen, setModalOpen] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
 
-                if (data.success) {
-                    setData(data.projects);
-                } else {
-                    setError('Projeler yüklenirken bir hata oluştu');
-                }
-            } catch (error) {
-                console.error('Projeler yüklenirken hata:', error);
-                setError('Sunucu bağlantısı başarısız');
-            } finally {
-                setLoading(false);
-            }
-        };
+    const handleDelete = async (itemId) => {
+        const success = await deleteData(`/projects/${itemId}`);
+        if (success) {
+            setData(projects.filter(p => p._id !== itemId));
+            
+        } else if (deleteError) {
+            setError(deleteError);
+        }
+        setLoading(deleteLoading);
+    };
 
-        fetchData();
-    }, []);
+    // Modal onaylandığında silme işlemi
+    const handleModalConfirm = async () => {
+        setModalOpen(false);
+        if (deleteId) {
+            await handleDelete(deleteId);
+            setDeleteId(null);
+        }
+    };
 
+    // Modal iptal edildiğinde
+    const handleModalCancel = () => {
+        setModalOpen(false);
+        setDeleteId(null);
+    };
+    //#endregion
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
     };
 
-    const filteredData = projects.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredData = projects.filter(p =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const columns = [
@@ -126,50 +139,63 @@ const Projects = () => {
             flex: 1,
             minWidth: 200,
             valueFormatter: (params) => {
-                const maxLength = 150;
                 const description = params.value || '';
-                return description.length > maxLength
-                    ? description.substring(0, maxLength) + '...'
-                    : description;
+                return substringValue(description, 150);
             }
             
         },
         {
             field: 'actions',
             headerName: 'İşlemler',
-            width: 120,
+            width: 150,
             renderCell: (params) => (
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/projectdetail', { state: {projectData: params.row }});
-                    }}
-                    style={{
-                        backgroundColor: '#4CAF50',
-                        color: 'white',
-                        border: 'none',
-                        padding: '5px 10px',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Düzenle
-                </button>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            // navigate('/projectdetail', { state: {projectData: params.row }});
+                            navigate(`/projects/edit/${params.row._id}`);
+
+                        }}
+                        className='submit-button'
+                    >
+                        Düzenle
+                    </button>
+                    <button
+                        onClick={async (e) => {
+                            e.stopPropagation();
+                            setDeleteId(params.row._id);
+                            setModalOpen(true);
+                        }}
+                        className='cancel-button'
+                    >
+                        Sil
+                    </button>
+                </div>
             )
         }
     ];
 
     return (
+        <>
         <CListContainer pageName={'projects'}
             error={error} 
             searchTerm={searchTerm} 
             handleSearch={handleSearch} 
-            url={'/project/new'} 
+            url={'/projects/new'} 
             filteredData={filteredData} 
             columns={columns} 
             loading={loading} 
             pageSize={10}
+        />
+        <ModalMessage
+            open={modalOpen}
+            type="warning"
+            message="Bu kaydı silmek istediğinize emin misiniz?"
+            onConfirm={handleModalConfirm}
+            onCancel={handleModalCancel}
         />  
+        </>
     );
 };
 

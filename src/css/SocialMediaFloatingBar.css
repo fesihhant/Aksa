@@ -14,20 +14,44 @@
   color: #fff;
   text-decoration: none;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  padding: 8px 12px 8px 16px;
+  padding: 8px 3px 8px 14px;
+  /* padding: 5px 3px 3px 8px; */
   width: 48px;
   min-width: 48px;
   overflow: visible;
   transition: background 0.2s;
   position: relative;
+  /* border-radius: 20px; */
 }
-
 .social-media-link i {
   font-size: 24px;
-  margin-right: 10px;
+  margin-right: 4px;
   z-index: 2;
   cursor: pointer;
 }
+
+.social-media-link-footer {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  /* padding: 8px 12px 8px 16px; */
+  padding: 5px 3px 3px 8px;
+  /* width: 48px;
+  min-width: 48px; */
+  overflow: visible;
+  transition: background 0.2s;
+  position: relative;
+  border-radius: 20px;
+}
+.social-media-link-footer i {
+  font-size: 24px;
+  margin-right: 4px;
+  z-index: 2;
+  cursor: pointer;
+}
+
 
 .social-media-label {
   opacity: 0;

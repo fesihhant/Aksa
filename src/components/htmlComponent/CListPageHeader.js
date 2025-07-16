@@ -14,8 +14,6 @@ const CListPageHeader = ({ pageName, error, searchTerm, handleSearch, url }) => 
                     <CNewButton url={url} />                             
                 </div>
             </div> 
-            <hr></hr>
-            <br></br>
             {error && <div className="error-message">{error}</div>}   
         </>
     );

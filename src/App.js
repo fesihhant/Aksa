@@ -70,14 +70,14 @@ import Footer from './components/public/Footer';
 //#endregion
 
 <Helmet>
-  <title>Medihant | HantSoft</title>
-  <meta name="description" content="Medihant is a software development company that specializes in creating innovative solutions for the healthcare industry." />
-  <meta name="keywords" content="proje, yazılım, react, hantsoft" />
+  <title>Aksa İnşaat </title>
+  <meta name="description" content="İnşaat, doğalgaz, boru hattı" />
+  <meta name="keywords" content="İnşaat, doğalgaz, boru hattı, belediye, bakanlık" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" href="/favicon.ico" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOM8d7x1z5l5e5c5e5e5e5e5e5e5e5e5e5e5e5" crossOrigin="anonymous" />  
-  <meta property="og:title" content="Medihant" />
-  <meta property="og:description" content="Proje açıklaması..." />
+  <meta property="og:title" content="Aksa" />
+  <meta property="og:description" content="İnşaat, doğalgaz, boru hattı" />
   <meta property="og:image" content="https://www.siteniz.com/proje.jpg" />
   <meta name="twitter:card" content="summary_large_image" />
 </Helmet>
@@ -101,7 +101,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
 
-            <Route path="/projects" element={<Projects />} />
+            {/* <Route path="/projects" element={<Projects />} /> */}
             <Route path="/project-detail" element={<ProjectDetail />} />
             <Route path="/activities" element={<OurActivities />} />
             
@@ -139,9 +139,9 @@ function App() {
             <Route path="/categories/new" element={ <PrivateRoute requireAdmin><EditCategory /></PrivateRoute>}/>
             <Route path="/categories/edit/:id" element={<PrivateRoute requireAdmin><EditCategory /></PrivateRoute>}/>  
                        
-            <Route path="/projectList" element={<PrivateRoute requireAdmin><ProjectList /></PrivateRoute>}/>           
-            <Route path="/project/new" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/>                             
-            <Route path="/project/edit/:id" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/>   
+            <Route path="/projects" element={<PrivateRoute requireAdmin><ProjectList /></PrivateRoute>}/>           
+            <Route path="/projects/new" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/>                             
+            <Route path="/projects/edit/:id" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/>   
             <Route path="/projectdetail" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/> 
             
             <Route path="/products" element={<PrivateRoute requireAdmin><Products /></PrivateRoute>}/>    

@@ -85,9 +85,13 @@
 .user-info {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1rem; 
 }
-
+.user-info img {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+}
 .welcome-text {
     font-size: 1rem;
     color: black;
@@ -130,8 +134,7 @@
 
 .login-link:hover,
 .register-link:hover {
-    background-color: #00847E;
-    /* background-color:#003da6; */
+    background-color:#003da6;
 } 
 
 /* Mobil görünüm için düzenleme */
@@ -148,7 +151,8 @@
     }
 
     .banner-right {
-        margin-top: 1rem;
+        margin-top: 3rem;
+        display: none;
     }
 
     .user-info {
@@ -160,4 +164,34 @@
         padding-top: 30px;
         right: 86px;
     }
+}
+.desktop-banner-right { display: flex; }
+.mobile-banner-right { display: none; }
+
+@media (max-width: 768px) {
+  .desktop-banner-right { display: none !important; }
+  .mobile-banner-right { display: flex !important; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+  .sidebar-menu.open { padding-top: 0; }
+  .mobile-banner-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 16px 12px;
+    width: 100%;
+    margin-bottom: 16px;
+  }
+  .mobile-banner-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+  }
+  .mobile-label {
+    font-size: 13px;
+    margin-top: 4px;
+    color: #444;
+    text-align: center;
+    word-break: break-word;
+  }
 }

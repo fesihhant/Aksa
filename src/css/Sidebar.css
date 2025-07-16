@@ -99,8 +99,7 @@ label #menu:hover {
 }
 
 .navbar a:hover {
-    background-color: cadetblue;    
-    /* background-color:#003da6; */
+    background-color:#003da6;
     color: white;
     cursor: pointer;
 }
@@ -159,8 +158,7 @@ label #menu:hover {
 
 .dropdown-content a:hover {
     color: white; 
-    background-color: cadetblue;
-    /* background-color:#003da6; */
+    background-color:#003da6;
 }
 
 .dropdown:hover .dropdown-content {
@@ -168,8 +166,7 @@ label #menu:hover {
 }
 
 .dropdown:hover .dropbtn {
-    background-color: cadetblue;    
-    /* background-color:#003da6; */
+    background-color:#003da6;
     color: white;
 }
 
@@ -184,7 +181,7 @@ label #menu:hover {
     cursor: pointer;
     font-size: 24px;
     margin-right: 6px;
-    color: rgb(76, 175, 80);
+    color: #003da6;
 }
 .close-menu {
     position: absolute;
@@ -230,24 +227,24 @@ label #menu:hover {
         box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
         transition: right 0.3s ease;
         z-index: 1000;
-        z-index: 1000;
     }
 
     .sidebar-menu.open {
         right: 0;
-        background-color: #003da6;
+        background-color: white;
     } 
     .close-menu {
         display: block;
-        color: white;
     }
     .dropdown .dropbtn {
-        color: white ;
+        color: black;
     }
     .dropdown-content{
-        background-color: #003da6;
+        /* background-color: #003da6; */
+        background-color: white;
     }
     .navbar a{
-        color: white ;
+        /* color: white ; */
+        color: black;
     }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {useNavigate, useLocation } from 'react-router-dom';
+import {useNavigate, useLocation, useParams } from 'react-router-dom';
 
 import DatePicker from 'react-datepicker'; // react-datepicker kütüphanesini kullanıyoruz
 import { tr } from 'date-fns/locale/tr';
@@ -10,11 +10,15 @@ import CCrousel from '../htmlComponent/CCarousel';
 
 import '../../css/NewProduct.css';
 import { Checkbox } from '@mui/material';
-import { formatPrice, categoryTypeEnum, apiUrl } from '../../utils/utils';
+import { formatPrice, categoryTypeEnum, serverUrl , apiUrl } from '../../utils/utils';
+
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; 
 
 const EditProject = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { id } = useParams();    
 
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -24,10 +28,9 @@ const EditProject = () => {
     const [imagePreviews, setImagePreviews] = useState([]);
 
     const [categories, setCategories] = useState([]); // Faaliyet türleri için state
-    const projectData = location.state?.projectData;
     const [formData, setFormData] = useState({
         name: '',
-        typeofActivityId: 0,
+        typeofActivityId: '',
         description: '',
         statusType: 'true',
         projectCost: '',
@@ -41,32 +44,17 @@ const EditProject = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     
-    useEffect(() => {
-        fetchCategories();
-
+    useEffect(() => {        
         const token = localStorage.getItem('token');
         if (!token) {
             navigate('/login');
             return;
         }
-        if (projectData) {
-            setFormData({
-                id: projectData._id || '',
-                name: projectData.name || '',
-                statusType: projectData.statusType === 'true' ? true : false,
-                typeofActivityId: projectData.typeofActivityId || 0,
-                description: projectData.description || '',
-                projectCost: projectData.projectCost ? projectData.projectCost.toString() : '',
-                isVisibleCost: projectData.isVisibleCost || false,
-                startDate: projectData.startDate ? new Date(projectData.startDate) : null,
-                endDate: projectData.endDate ? new Date(projectData.endDate) : null,
-                imageUrls: projectData.imageUrls || [],
-            });
 
-            if (projectData.imageUrls && projectData.imageUrls.length > 0) {
-                setImages(projectData.imageUrls.map(url => `http://localhost:5001${url}`)); // Resim URL'lerini ayarlıyoruz
-                setImagePreviews(projectData.imageUrls.map(url => `http://localhost:5001${url}`)); // Resim önizlemelerini ayarlıyoruz
-            }
+        fetchCategories();
+
+        if (id) {
+            fetchData();
         } else {
             console.log('No project data, resetting form'); // Debug için
             setFormData({
@@ -74,7 +62,7 @@ const EditProject = () => {
                 statusType: '',
                 description: '',
                 projectCost: '',
-                typeofActivityId: false,
+                typeofActivityId: '',
                 startDate: '',
                 endDate: '',
                 imageUrls: []
@@ -82,19 +70,16 @@ const EditProject = () => {
             setImages([]);
             setImagePreviews([]);
         }
-        }, [projectData]);
-        
+        }, []);   
+
+    
     const fetchCategories = async () => {
         try {
             const token = localStorage.getItem('token');
-            if (!token) {
-                navigate('/login');
-                return;
-            }
-
-            const categoryTypeId = categoryTypeEnum.PROJECT; // Faaliyet türü için ID
             
-            const response = await fetch(`${apiUrl}/categories/categorytypes?categoryTypeId=${categoryTypeId}`);
+            const categoryTypeId = categoryTypeEnum.PROJECT; // Faaliyet türü için ID
+            const baseUrl = `${apiUrl}/categories/categorytypes`;
+            const response = await fetch(`${baseUrl}/?categoryTypeId=${categoryTypeId}`);
             
             const data = await response.json();
             if (data.success) {
@@ -108,7 +93,39 @@ const EditProject = () => {
             console.error('Kategori verileri alınırken hata:', error);
         }
     };
+    // Proje verilerini getirme
+    const fetchData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+             
+            const response = await fetch(`${apiUrl}/projects/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
+            const data = await response.json();
+
+            if (data.success) {
+                setFormData(data.project);
+                setIsActive(data.project.statusType === 'true'); // Checkbox durumunu ayarla
+                
+                if (data.project.imageUrls && data.project.imageUrls.length > 0) {
+                    setImages(data.project.imageUrls.map(url => `${serverUrl}${url}`)); // Resim URL'lerini ayarlıyoruz
+                    setImagePreviews(data.project.imageUrls.map(url => `${serverUrl}${url}`)); // Resim önizlemelerini ayarlıyoruz
+                } else {
+                    setImages([]);
+                    setImagePreviews([]);
+                }
+            } else {
+                setError(data.message || 'Proje bilgileri yüklenemedi');
+            }
+        } catch (error) {
+            console.error('Proje bilgileri getirme hatası:', error);
+            setError(error.message || 'Sunucu bağlantısı başarısız');
+        }
+    };
+    
     const handleInputChange = (e) => {
         const { name, value } = e.target;        
          
@@ -162,8 +179,8 @@ const EditProject = () => {
             }
              
             const formDataToSend = new FormData();
-            if (projectData?._id) {
-                formDataToSend.append('id', projectData._id); // Güncelleme için ID
+            if (formData?._id) {
+                formDataToSend.append('id', formData._id); // Güncelleme için ID
             }
             if (images.length > 0) {
                 const imageSizeValid = images.map((x) => x.size).reduce((a,b)=>a+b, 0) > 5 * 1024 * 1024;// 5MB kontrolü
@@ -174,7 +191,8 @@ const EditProject = () => {
                     images.forEach(image => formDataToSend.append('images', image)); // Resim dosyaları
                 } 
             }
-            formDataToSend.append('typeofActivityId', formData.typeofActivityId);
+            
+            formDataToSend.append('typeofActivityId', formData.typeofActivityId._id || formData.typeofActivityId);
             formDataToSend.append('name', formData.name);
             formDataToSend.append('description', formData.description);
             formDataToSend.append('statusType', isActive ? 'true' : 'false'); // Checkbox durumu
@@ -184,12 +202,12 @@ const EditProject = () => {
             formDataToSend.append('endDate', endDate ? endDate.toISOString() : null);
            
             
-            const url = projectData?._id
-                ? `${apiUrl}/projects/${projectData._id}` // Güncelleme için PUT
+            const url = formData?._id
+                ? `${apiUrl}/projects/${formData._id}` // Güncelleme için PUT
                 : `${apiUrl}/projects`; // Yeni proje için POST
     
             const response = await fetch(url, {
-                method: projectData?._id ? 'PUT' : 'POST',
+                method: formData?._id ? 'PUT' : 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -211,24 +229,36 @@ const EditProject = () => {
         }
     };
     
-    const pathnames = [
-        {
-          path: 'Projeler',
-          link: '/projects',
-        },
-        {
-          path: (projectData ? 'Proje Düzenle' : 'Yeni Proje'),
-          link: '',
+    const editorModules = {
+        toolbar: [
+            [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+            [{size: []}],
+            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+            [{'list': 'ordered'}, {'list': 'bullet'}, 
+            {'indent': '-1'}, {'indent': '+1'}],
+            ['link', 'image', 'video'],
+            ['clean']
+        ],
+        clipboard: {
+            // toggle to add extra line breaks when pasting HTML:
+            matchVisual: false,
         }
-    ];
-    
+    }
+
+    const editorFormats = [
+        'header', 'font', 'size',
+        'bold', 'italic', 'underline', 'strike', 'blockquote',
+        'list', 'bullet', 'indent',
+        'link', 'image', 'video'
+    ]
+       
     return (
         <div className="home-container">
             <div className="main-content">
-                <Breadcrumbs breadcrumbs={pathnames} />
+                <Breadcrumbs />
                 <form id="productForm" onSubmit={handleSubmit} className="new-product-form">
                     <div className="page-header">
-                        {/* <h1 className='headerClass'>{projectData ? 'Proje Düzenle' : 'Yeni Proje'}</h1> */}
+                        {/* <h1 className='headerClass'>{formData ? 'Proje Düzenle' : 'Yeni Proje'}</h1> */}
                         <div className="form-actions">
                             <button 
                                 type="submit"
@@ -236,7 +266,7 @@ const EditProject = () => {
                                 className="submit-button"
                                 disabled={loading}
                             >
-                                {loading ? 'Kaydediliyor...' : (projectData ? 'Güncelle' : 'Kaydet')}
+                                {loading ? 'Kaydediliyor...' : (formData ? 'Güncelle' : 'Kaydet')}
                             </button>
                             <button 
                                 type="button" 
@@ -268,7 +298,7 @@ const EditProject = () => {
                         <select
                             id="typeofActivityId"
                             name="typeofActivityId"
-                            value={formData.typeofActivityId}
+                            value={formData.typeofActivityId._id || formData.typeofActivityId}
                             onChange={handleInputChange} 
                             required
                         >
@@ -367,12 +397,14 @@ const EditProject = () => {
                     
                     <div className="form-group">
                         <label htmlFor="description">Açıklama</label>
-                        <textarea
-                            id="description"
-                            name="description"
+                        <ReactQuill
+                            theme="snow"                            
+                            style={{minHeight:'300px'}}
                             value={formData.description}
-                            onChange={handleInputChange}
-                            required
+                            onChange={value => setFormData((prev) => ({ ...prev, description: value }))}   
+                            placeholder="Açıklama giriniz..."
+                            modules={editorModules}
+                            formats={editorFormats}
                         />
                     </div>
                     <div className="form-group">

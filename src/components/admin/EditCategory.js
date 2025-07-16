@@ -31,8 +31,7 @@ const EditCategory = () => {
                 navigate('/login');
                 return;
             }
-
-            const response = await fetch(`${apiUrl}/api/categories/${id}`, {
+            const response = await fetch(`${apiUrl}/categories/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -78,8 +77,11 @@ const EditCategory = () => {
 
             const formDataToSend = new FormData();
             if (id) {
-                formDataToSend.append('_id', id);
+                formDataToSend.append('id', id);
             } 
+            formDataToSend.append('name', formData.name);
+            formDataToSend.append('categoryTypeId', formData.categoryTypeId);
+
             const url = id
                 ? `${apiUrl}/categories/${id}`
                 : `${apiUrl}/categories`;
@@ -100,8 +102,7 @@ const EditCategory = () => {
 
             if (data.success) {
                 navigate('/categories');
-                navigate('/categories/new')
-                window.location.reload();
+                // window.location.reload();
             } else {
                 setError(data.message || 'Kategori kaydedilirken bir hata oluştu');
             }
@@ -112,6 +113,7 @@ const EditCategory = () => {
             setLoading(false);
         }
     };
+    
 
     if (!currentUser || currentUser.role !== 'admin') {
         return <div>Bu sayfaya erişim yetkiniz yok.</div>;

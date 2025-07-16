@@ -39,7 +39,13 @@ const upload = multer({
 // Tüm kayıtları getir - Sadece admin
 router.get('/', protect, async (req, res) => {
     try {
-        const projects = await Project.find();
+        console.log('GET /api/projects endpoint çağrıldı');
+        const projects = await Project.find().populate('typeofActivityId', 'name');
+        if (!projects || projects.length === 0) {
+            return res.status(404).json({ success: false, message: 'Proje bulunamadı' });
+        }
+        console.log('Projeler:', projects); // Projeleri loglayın
+        // Projeleri populate ile doldurun
         res.json({ 
             success: true, 
             projects 
@@ -94,9 +100,6 @@ router.get('/projectList', async (req, res) => {
 // Tek kayıt getir
 router.get('/:id', protect, async (req, res) => {
     try {
-        console.log('GET /api/projects/:id endpoint çağrıldı');
-        console.log('ID:', req.params.id); // Gelen ID'yi loglayın
-
         const project = await Project.findById(req.params.id);
         if (!project) {
             return res.status(404).json({ success: false, message: 'Kayıt bulunamadı' });

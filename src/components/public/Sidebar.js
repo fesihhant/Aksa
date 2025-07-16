@@ -1,6 +1,6 @@
 import React,{useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { categoryTypeEnum,apiUrl } from '../../utils/utils';
+import { categoryTypeEnum, apiUrl } from '../../utils/utils';
 import '../../css/Sidebar.css';
 
 const Sidebar = () => {
@@ -8,6 +8,7 @@ const Sidebar = () => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');    
     const [categories, setCategories] = useState([]);
+    const baseUrl = `${apiUrl}/categories`;
 
     const handleMenuClick = (path) => {
         navigate(path);
@@ -18,7 +19,7 @@ const Sidebar = () => {
             try {
                 
                 const categoryTypeId = categoryTypeEnum.PROJECT; // Faaliyet türü için ID
-                const response = await fetch(`${apiUrl}/categories/categorytypes?categoryTypeId=${categoryTypeId}`);
+                const response = await fetch(`${baseUrl}/categorytypes?categoryTypeId=${categoryTypeId}`);
                 const data = await response.json();
                 if (data.success) {
                     setCategories(data.categories);
@@ -50,7 +51,7 @@ const Sidebar = () => {
                             {/* <a onClick={() => handleMenuClick('/event-list')}>Etkinlikler</a> */}
                             <a onClick={() => handleMenuClick('/users')}>Kullanıcılar</a>
                             {/* <a onClick={() => handleMenuClick('/products')} >Ürünler</a> */}
-                            <a onClick={() => handleMenuClick('/projectList')} >Projeler</a>
+                            <a onClick={() => handleMenuClick('/projects')} >Projeler</a>
                             <a onClick={() => handleMenuClick('/categories')}>Kategoriler</a>
                             <a onClick={() => handleMenuClick('/references')} >Referanslar</a>
                             <a onClick={() => handleMenuClick('/introductionBooklet')} >Tanıtım Kitapçığı</a>
@@ -60,8 +61,8 @@ const Sidebar = () => {
                     </div>
                 ) : <div></div>
             }
-            {/* <a onClick={() => handleMenuClick('/')}>Anasayfa</a> */}
-            <a onClick={() => handleMenuClick('/projects')}>Projeler</a>
+            <a onClick={() => handleMenuClick('/')}>Anasayfa</a>
+            {/* <a onClick={() => handleMenuClick('/projects')}>Projeler</a> */}
             {categories.length > 0 && 
             
                 <div class="dropdown">

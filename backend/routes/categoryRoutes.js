@@ -30,16 +30,14 @@ router.get('/categorytypes', async (req, res) => {
     try {
         // Kategori türü ID'sini al
         const { categoryTypeId, categoryTypeIdList } = req.query;
+        console.log('categoryTypeId:', categoryTypeId);
+        console.log('categoryTypeIdList:', categoryTypeIdList);
 
         if (categoryTypeIdList) {
-            // String ise diziye çevir
-            console.log('categoryTypeIdList ', categoryTypeIdList);
             let idList = categoryTypeIdList;
-            console.log('idList ', idList);
 
             if (typeof idList === 'string') {
                 idList = idList.split(',').map(Number);
-                console.log('idList.split ', idList);
             }
             const categories = await Category.find({ categoryTypeId: { $in: idList } });
             if (!categories || categories.length === 0) {
@@ -52,7 +50,9 @@ router.get('/categorytypes', async (req, res) => {
             return res.status(400).json({ success: false, message: 'categoryTypeId gerekli' });
         }
 
-        const categories = await Category.find({ categoryTypeId: Number(categoryTypeId) });
+        const categories = await Category.find({ categoryTypeId: categoryTypeId });
+        console.log('Kategoriler:', categories);
+        console.log('Kategoriler sayısı:', categories.length);
 
         if (!categories || categories.length === 0) {
             return res.status(404).json({ success: false, message: 'Kategori bulunamadı' });
@@ -179,7 +179,7 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
             return res.status(404).json({ success: false, message: 'Kategori bulunamadı' });
         }
 
-        await data.remove();
+        await data.deleteOne();
         res.json({ success: true, message: 'Kategori başarıyla silindi' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

@@ -42,11 +42,11 @@ const Projects = () => {
     return (
         <>
             <Helmet>
-                <title>Projeler | Medihant</title>
-                <meta name="description" content="Medihant tarafından geliştirilen tüm projeleri burada bulabilirsiniz." />
-                <meta name="keywords" content="projeler, yazılım, medihant, hantsoft, react" />
+                <title>Projeler | Aksa İnşaat</title>
+                <meta name="description" content="Aksa inşaat tarafından geliştirilen tüm projeleri burada bulabilirsiniz." />
+                <meta name="keywords" content="projeler, inşaat, doğalgaz," />
                 <meta property="og:title" content="Projelerimiz" />
-                <meta property="og:description" content="Medihant'ın geliştirdiği projeler hakkında detaylı bilgi alın." />
+                <meta property="og:description" content="Aksa inşaat'ın geliştirdiği projeler hakkında detaylı bilgi alın." />
             </Helmet>
         
             <div className="home-container">

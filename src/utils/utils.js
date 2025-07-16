@@ -119,12 +119,14 @@ export const getPageTitleText = (pageName) => {
     }
 }
 
-export const substringValue = (str, maxLength) => {
-    if (!str) return ;// Eğer str boşsa, boş string döndür
-    if (typeof str !== 'string') return str; // Eğer str string değilse, olduğu gibi döndür     
-    return str.length > maxLength ? str.substring(0, maxLength) + '...' : str;
-} 
+export function substringValue(htmlString, length) {
+    // HTML etiketlerini kaldır
+    const plainText = htmlString.replace(/<[^>]+>/g, '');
+    // İlk "length" karakteri al
+    return plainText.length > length ? plainText.substring(0, length) + "..." : plainText;
+}
  
+
 // // Telefon numarası formatlama fonksiyonu
 export const formatPhoneNumber = (value) => {
     const digits = value.replace(/\D/g, '').substring(0, 11); // Türkçe GSM için 11 hane
@@ -137,9 +139,10 @@ export const formatPhoneNumber = (value) => {
 }
 //enums
 export const categoryTypeEnum = {
-    PROJECT: 1,
-    USER: 2,
-    EVENT:3,
+    PROJECT:'685d36dc47089ae0b79408c7',
+    USER: '685d36e547089ae0b79408cc',
+    EVENT:'685d36ed47089ae0b79408d1',
+    PRODUCT:'686294ac9d223a27cbc3aa14',
     DISTANCE:4
 };
 
@@ -186,3 +189,25 @@ export const getSocialMediaBgColor=(name) =>{
   if (searchValue.includes('twitch')) return 'green';
   if (searchValue.includes('whatsapp')) return '#1ebea5';
 }
+
+export const ModalMessage = ({ message, type, onClose }) => {
+    const modalClass = type === 'warning' ? 'modal-warning' : 'modal-info';
+
+    return (
+        <div className={`modal ${modalClass}`}>
+            <div className="modal-overlay" onClick={onClose}></div>
+            <div className="modal-container">
+                <div className="modal-header">
+                    <h5 className="modal-title">{type === 'warning' ? 'Warning' : 'Information'}</h5>
+                    <button className="modal-close" onClick={onClose}>×</button>
+                </div>
+                <div className="modal-content">
+                    <p>{message}</p>
+                </div>
+                <div className="modal-footer">
+                    <button className="modal-button" onClick={onClose}>Close</button>
+                </div>
+            </div>
+        </div>
+    );
+};
