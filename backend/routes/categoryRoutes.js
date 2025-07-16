@@ -6,8 +6,6 @@ const { protect, authorize } = require('../middleware/auth');
 
 router.get('/getCategoryNameById', async (req, res) => {
     try {
-        console.log('getCategoryNameById çağrıldı');
-        // Kategori ID'sini al
         const { categoryId } = req.query;
         if (!categoryId) {
             return res.status(400).json({ success: false, message: 'categoryId gerekli' });
@@ -30,8 +28,6 @@ router.get('/categorytypes', async (req, res) => {
     try {
         // Kategori türü ID'sini al
         const { categoryTypeId, categoryTypeIdList } = req.query;
-        console.log('categoryTypeId:', categoryTypeId);
-        console.log('categoryTypeIdList:', categoryTypeIdList);
 
         if (categoryTypeIdList) {
             let idList = categoryTypeIdList;
@@ -51,8 +47,6 @@ router.get('/categorytypes', async (req, res) => {
         }
 
         const categories = await Category.find({ categoryTypeId: categoryTypeId });
-        console.log('Kategoriler:', categories);
-        console.log('Kategoriler sayısı:', categories.length);
 
         if (!categories || categories.length === 0) {
             return res.status(404).json({ success: false, message: 'Kategori bulunamadı' });
@@ -109,7 +103,6 @@ router.post('/', protect, authorize('admin'), async (req, res) => {
         res.status(201).json({ success: true, category: newCategory });
 
     } catch (error) {
-        console.error('Kategori oluşturma hatası:', error);
         res.status(400).json({
             success: false,
             message: 'Kategori oluşturulurken bir hata oluştu: ' + error.message
@@ -120,7 +113,6 @@ router.post('/', protect, authorize('admin'), async (req, res) => {
 // Kaydı güncelle 
 router.put('/:id', protect, authorize('admin'), async (req, res) => {
     try {
-        console.log('Güncelleme verileri:', req.body);
 
         const { name, categoryTypeId } = req.body;
         const categoryId = req.params.id;
@@ -142,8 +134,6 @@ router.put('/:id', protect, authorize('admin'), async (req, res) => {
             name, categoryTypeId, id: categoryId
         };
 
-        console.log('Güncellenecek veriler:', updateData);
-
         const category = await Category.findByIdAndUpdate(
             categoryId,
             updateData,
@@ -162,7 +152,6 @@ router.put('/:id', protect, authorize('admin'), async (req, res) => {
             category
         });
     } catch (error) {
-        console.error('Kategori güncelleme hatası:', error);
         res.status(500).json({
             success: false,
             message: 'Kategori güncellenirken bir hata oluştu: ' + error.message

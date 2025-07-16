@@ -17,6 +17,7 @@
 }
 .about-form-container {
     padding: 2rem;
+    text-align: justify;
 }
 .about-form-container h2 {
     color: #16a086;

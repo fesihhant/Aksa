@@ -36,17 +36,14 @@
   color: #fff;
   text-decoration: none;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-  /* padding: 8px 12px 8px 16px; */
-  padding: 5px 3px 3px 8px;
-  /* width: 48px;
-  min-width: 48px; */
+  padding: 3px 1px 3px 5px;
   overflow: visible;
   transition: background 0.2s;
   position: relative;
   border-radius: 20px;
 }
 .social-media-link-footer i {
-  font-size: 24px;
+  font-size: 12px;
   margin-right: 4px;
   z-index: 2;
   cursor: pointer;
@@ -79,10 +76,15 @@
   height: 40px;
   pointer-events: auto;
 }
-
+.social-media-footer-bar{
+  display: none;
+}
 @media (max-width: 768px) {
 
   .social-media-bar {
     display: none;
+  }
+  .social-media-footer-bar{
+    display: block;
   }
 }

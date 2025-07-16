@@ -83,7 +83,7 @@ const ProjectDetail = () => {
                     }
                 />
                 <meta property="og:title" content={projectData?.name || "Proje Detayı"} />
-                <meta property="og:description" content={projectData?.description?.substring(0, 160) || "Proje detaylarını inceleyin."} />
+                <meta property="og:description" content={projectData?.description || "Proje detaylarını inceleyin."} />
                 </Helmet>   
             
             <div className="home-container">
@@ -145,13 +145,7 @@ const ProjectDetail = () => {
                                 <div className="col-12">
                                     <div className="form-group">
                                         <label htmlFor="description">Açıklama</label>
-                                        {/* <label className='justifyLabel'
-                                            id="description"
-                                            name="description"
-                                        >{formData.description}
-                                        
-                                        </label> */}
-                                        <div >
+                                        <div id="description" name="description">
                                             <div dangerouslySetInnerHTML={{ __html: formData.description }} />
                                         </div>
                                     </div>

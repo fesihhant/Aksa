@@ -108,6 +108,11 @@ const OurActivities = () => {
                 <hr></hr>
                 <br></br>
                 <div className="projects-grid">
+                    {projects.length === 0 && (
+                        <div className="no-projects-message"> 
+                            {categoryName ? `${categoryName} kategorisine ait proje bulunamadı.` : 'Proje bulunamadı.'  }
+                        </div>
+                    )}
                     {projects
                         .filter(x =>
                             (x.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

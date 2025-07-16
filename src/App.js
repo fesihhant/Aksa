@@ -11,20 +11,26 @@ import EditUser from './components/admin/EditUser';
 import Categories from './components/admin/Categories';
 import EditCategory from './components/admin/EditCategory';
 
+import CategoryTypes from './components/admin/CategoryTypes';
+import EditCategoryType from './components/admin/EditCategoryType';
+
 import ProjectList from './components/admin/Projects';
 import EditProject from './components/admin/EditProject';
-
-import Products from './components/admin/Products';
-import NewProduct from './components/admin/NewProduct';
-
+ 
 import References from './components/admin/References';
 import EditReference from './components/admin/EditReference';
 import IntroductionBookletEdit from './components/admin/IntroductionBookletEdit';
+
 import EditAbout from './components/admin/EditAbout';
 import SocialMediaList from './components/admin/SocialMediaList';
 import SocialMediaEdit from './components/admin/SocialMediaEdit';
-import EventList from './components/admin/EventList';
-import EditEvent from './components/admin/EditEvent';
+
+ 
+import PrivacyPolicyList from './components/admin/PrivacyPolicyList';
+import EditPrivacyPolicy from './components/admin/EditPrivacyPolicy';
+
+import TermsOfServiceList from './components/admin/TermsOfServiceList';
+import EditTermsOfService from './components/admin/EditTermsOfService';
 
 
 // #endregion
@@ -37,23 +43,14 @@ import Register from './components/public/Register';
 import About from './components/public/About';
 import Contact from './components/public/Contact';
 
-import Projects from './components/public/Projects';
 import ProjectDetail from './components/public/ProjectDetail';
 import OurActivities from './components/public/OurActivities';
 import ResetPassword from './components/public/ResetPassword';
-
-import Product from './components/public/Product';
-import ProductDetail from './components/public/ProductDetail';
-
+ 
 import SocialMediaFloatingBar from './components/htmlComponent/SocialMediaFloatingBar';
 import Profile from './components/htmlComponent/Profile';  
 import Notifications from './components/htmlComponent/Notifications';
-import Reservations from './components/htmlComponent/Reservations';
-import AttendedEvents from './components/htmlComponent/AttendedEvents';
-import Favorites from './components/htmlComponent/Favorites';
 
-import Events from './components/public/Events';
-import EventDetail from './components/public/EventDetail';
 
 // #endregion
 
@@ -67,6 +64,13 @@ import './index.css';
 
 import Banner from './components/public/Banner';
 import Footer from './components/public/Footer';
+//#endregion
+
+
+//#region "public components"
+import NotFound from './components/public/NotFound';
+import PrivacyPolicy from './components/public/PrivacyPolicy';
+import TermsOfService from './components/public/TermsOfService';
 //#endregion
 
 <Helmet>
@@ -105,27 +109,11 @@ function App() {
             <Route path="/project-detail" element={<ProjectDetail />} />
             <Route path="/activities" element={<OurActivities />} />
             
-            <Route path="/product" element={<Product />} />
-            <Route path="/product-detail" element={<ProductDetail />} />
-            
-            {/* Doğa Benim */}
-            <Route path="/events" element={<Events />} />
-            <Route path="/event-detail" element={<EventDetail />} />
-
-            <Route  path="/event-list" element={<PrivateRoute requireAdmin><EventList /></PrivateRoute>} />
-            <Route path="/event/new" element={<PrivateRoute requireAdmin><EditEvent /></PrivateRoute>} />
-            <Route path="/event/edit/:id" element={<PrivateRoute requireAdmin><EditEvent /></PrivateRoute>}/> 
-            
-
-
             <Route path="/reset-password/:resetToken" element={<ResetPassword />} />
             <Route path="/user-activated/:activatedToken" element={<ResetPassword />} />
             
             <Route path="/profile" element={<Profile />} />
             <Route path="/notifications" element={<Notifications />} />
-            <Route path="/reservations" element={<Reservations />} />
-            <Route path="/attended-events" element={<AttendedEvents />} />
-            <Route path="/favorites" element={<Favorites />} />
 
             <Route path="/test" element={<div>Test Çalışıyor</div>} />
 
@@ -138,15 +126,15 @@ function App() {
             <Route path="/categories" element={<PrivateRoute requireAdmin><Categories /></PrivateRoute>} /> 
             <Route path="/categories/new" element={ <PrivateRoute requireAdmin><EditCategory /></PrivateRoute>}/>
             <Route path="/categories/edit/:id" element={<PrivateRoute requireAdmin><EditCategory /></PrivateRoute>}/>  
-                       
+             
+            <Route path="/categoryTypes" element={<PrivateRoute requireAdmin ><CategoryTypes /></PrivateRoute>} /> 
+            <Route path="/categoryTypes/new" element={ <PrivateRoute requireAdmin ><EditCategoryType /></PrivateRoute>}/>
+            <Route path="/categoryTypes/edit/:id" element={<PrivateRoute requireAdmin ><EditCategoryType /></PrivateRoute>}/>  
+
             <Route path="/projects" element={<PrivateRoute requireAdmin><ProjectList /></PrivateRoute>}/>           
             <Route path="/projects/new" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/>                             
             <Route path="/projects/edit/:id" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/>   
             <Route path="/projectdetail" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/> 
-            
-            <Route path="/products" element={<PrivateRoute requireAdmin><Products /></PrivateRoute>}/>    
-            <Route path="/product/new" element={<PrivateRoute requireAdmin><NewProduct /></PrivateRoute>}/>
-            <Route path="/product/edit/:id" element={<PrivateRoute requireAdmin><NewProduct /></PrivateRoute>} />
             
             <Route path="/references" element={<PrivateRoute requireAdmin><References /></PrivateRoute>}/>
             <Route path="/reference/new" element={<PrivateRoute requireAdmin><EditReference /></PrivateRoute>}/>
@@ -160,6 +148,19 @@ function App() {
             <Route path="/social-media" element={<PrivateRoute requireAdmin> <SocialMediaList /></PrivateRoute>} />
             <Route path="/social-media/new" element={<PrivateRoute requireAdmin><SocialMediaEdit /></PrivateRoute>} />
             <Route path="/social-media/edit/:id" element={<PrivateRoute requireAdmin><SocialMediaEdit /></PrivateRoute>} />
+            
+            
+            <Route path="/privacypolicies" element={<PrivateRoute requireAdmin ><PrivacyPolicyList /></PrivateRoute>} /> 
+            <Route path="/privacypolicies/new" element={ <PrivateRoute requireAdmin><EditPrivacyPolicy /></PrivateRoute>}/>
+            <Route path="/privacypolicies/edit/:id" element={<PrivateRoute requireAdmin><EditPrivacyPolicy /></PrivateRoute>}/>  
+            
+            <Route path="/termsofservices" element={<PrivateRoute requireAdmin><TermsOfServiceList /></PrivateRoute>} /> 
+            <Route path="/termsofservices/new" element={ <PrivateRoute requireAdmin><EditTermsOfService /></PrivateRoute>}/>
+            <Route path="/termsofservices/edit/:id" element={<PrivateRoute requireAdmin><EditTermsOfService /></PrivateRoute>}/>  
+
+            <Route path="/privacy-policy" element={ <PrivacyPolicy />} />  
+            <Route path="/terms-of-service" element={<TermsOfService />} />  
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Footer/>
         </div>

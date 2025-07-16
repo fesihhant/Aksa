@@ -57,6 +57,8 @@ const Sidebar = () => {
                             <a onClick={() => handleMenuClick('/introductionBooklet')} >Tanıtım Kitapçığı</a>
                             <a onClick={() => handleMenuClick('/editAbout')} >Biz Kimiz</a>
                             <a onClick={() => handleMenuClick('/social-media')} >Sosyal Medya</a>
+                            <a onClick={() => handleMenuClick('/privacypolicies')}>Gizlilik Politikası</a>
+                            <a onClick={() => handleMenuClick('/termsofservices')}>Kullanım şartları</a>
                         </div>
                     </div>
                 ) : <div></div>

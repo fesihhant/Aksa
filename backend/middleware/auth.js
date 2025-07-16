@@ -4,39 +4,6 @@ const User = require('../models/User');
 const JWT_SECRET = process.env.JWT_SECRET; // Güvenli bir ortam değişkeni kullanın
 const JWT_ANONYMOUS_SECRET = 'anonymous-secret-key'; // Güvenli bir ortam değişkeni kullanın
 
-// exports.protect = async (req, res, next) => {
-//     try {
-//         let token;
-
-//         if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-//             token = req.headers.authorization.split(' ')[1];
-//         }
-
-//         if (!token) {
-//             return res.status(401).json({
-//                 success: false,
-//                 message: 'Bu işlem için giriş yapmanız gerekiyor'
-//             });
-//         }
-
-//         try {
-//             const decoded = jwt.verify(token, JWT_SECRET);
-//             req.user = await User.findById(decoded.id).select('-password');
-//             next();
-//         } catch (error) {
-//             return res.status(401).json({
-//                 success: false,
-//                 message: 'Geçersiz token'
-//             });
-//         }
-//     } catch (error) {
-//         res.status(500).json({
-//             success: false,
-//             message: 'Sunucu hatası'
-//         });
-//     }
-// };
-
 exports.protect = async (req, res, next) => {
     try {
         let token;

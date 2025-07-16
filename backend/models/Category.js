@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const {categoryTypeEnum} = require('../emuns/enums')
 
 const categorySchema = new mongoose.Schema({
     name: {

@@ -39,7 +39,8 @@ const Breadcrumbs = () => {
                 return 'Yeni';
             case 'product-detail':
                 return 'Ürün Detayı';
-
+            case 'activities':
+                return 'Faaliyetlerimiz';
             case 'projects':
                 return 'Projeler';
             case 'projectList':
@@ -90,7 +91,16 @@ const Breadcrumbs = () => {
                 return 'Güncelle';
             case 'addSocialMedia':
                 return 'Yeni';
-    
+            
+            case 'termsofservices':
+                return 'Kullanım Şartları';  
+            case 'terms-of-service':
+                return 'Kullanım Şartları';
+
+            case 'privacy-policy':
+                return 'Gizlilik Politikası';
+            case 'privacypolicies':
+                return 'Gizlilik Politikaları';
             case 'categories':
                 return 'Kategoriler';
             case 'category':
