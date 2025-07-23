@@ -3,8 +3,10 @@ import { Helmet} from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import Breadcrumbs from './Breadcrumbs';
 import CHelmet from '../htmlComponent/CHelmet';
+import CCarousel from '../htmlComponent/CCarousel';
 import { useApiCall } from '../../utils/apiCalls';
-import {substringValue} from '../../utils/utils';
+import {serverUrl, substringValue} from '../../utils/utils';
+import ProjectSlider from '../htmlComponent/ProjectSlider';
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -13,12 +15,26 @@ const HomePage = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusType, setStatusType] = useState('');
     const [data, setData] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
     
     const { apiData, apiError, apiLoading } = useApiCall('/projects/projectList', 'GET', null, false);   
     useEffect(() => {
         if (apiData) { 
             if (apiData.success) {
                 setData(apiData.projects);
+
+                let imageData = [];
+                apiData.projects.map(p => {
+                    if (p.imageUrls && p.imageUrls.length > 0) {
+                        p.imageUrls.map(url => {
+                            let data = {title: p.title,
+                                url : `${serverUrl}${url}`
+                            };
+                            imageData.push(data);
+                        });
+                    }
+                })
+                setImagePreviews(imageData);
             } else {
                 setError('Projeler yüklenirken bir hata oluştu');
             }
@@ -42,35 +58,12 @@ const HomePage = () => {
     return (
         <>
             <CHelmet pageName="Projelerimiz" projectName="İnşaat projeleri, doğalgaz" categoryName="boru hattı" />
-            <div className="home-container">
-                <div className="main-content">
-                    <Breadcrumbs breadcrumbs={pathnames} />
-                    <div className="page-header">
-                        {/* <h1 className='headerClass'><i class="fa-solid fa-list-check"></i> Projeler</h1> */}
-                        <div className="header-actions">                         
-                            <div className="search-box">
-                                <select
-                                    id='statusType'
-                                    name="statusType"
-                                    onChange={e => setStatusType(e.target.value)}
-                                >
-                                    <option select value="">Tümü</option>
-                                    <option value="true">Devam Eden</option>
-                                    <option value="false">Biten</option>
-                                </select>
-                                <input
-                                    type="text"
-                                    placeholder="Ara..."
-                                    value={searchTerm}
-                                    onChange={handleSearch}
-                                    className="search-input"
-                                />
-                            </div> 
-                        </div>
-                    </div>
-                    <hr></hr>
-                    <br></br>
+            <div className="home-container" >
+                <div className="main-content" style={{paddingTop:'0'}}>
+                    <ProjectSlider projects={data} navigate={navigate} />
+                    <br/>
                     <div className="projects-grid">
+                        
                         {data
                             .filter(x =>
                                 (x.name.toLowerCase().includes(searchTerm.toLowerCase()) ||

@@ -155,7 +155,7 @@ const Footer = () => {
             <div class="col-8">               
                 <p style={{textAlign:'center', fontSize:'12px', color:'gray'}}>
                     <a href="/">@aksainsaat </a> telif hakkı ihlali düşündüğünüz içerikler için lütfen 
-                    <a href="/Contact" style={{color:'darkblue'}}> iletişim sayfamızdan</a> bizimle iletişime geçin.
+                    <a href="/contact" style={{color:'darkblue'}}> iletişim sayfamızdan</a> bizimle iletişime geçin.
                     <a href="/privacy-policy" style={{color:'darkblue'}}> Gizlilik Politikası</a> | 
                     <a href="/terms-of-service" style={{color:'darkblue'}}> Kullanım Şartları</a>
                 </p>

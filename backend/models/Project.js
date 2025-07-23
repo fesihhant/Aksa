@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const currencyTypes = ['TRY', 'USD', 'EUR', 'GBP', 'JPY']; // İstediğiniz para birimleri
 const projectSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -30,10 +30,12 @@ const projectSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    imageUrls: [{
+    currencyType: {
         type: String,
-        default: null
-    }],
+        enum: currencyTypes,
+        default: 'TRY',
+        required: [true, 'Para birimi zorunludur']
+    },
     startDate: {
         type: Date,
         required: [true, 'Başlangıç tarihi zorunludur'],

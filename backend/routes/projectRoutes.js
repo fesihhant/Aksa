@@ -116,7 +116,7 @@ router.get('/:id', protect, async (req, res) => {
 // Yeni Kayıt oluştur - Sadece admin
 router.post('/', protect, authorize('admin'), upload.array('images'), async (req, res) => {
     try {
-        const { name, statusType, description, projectCost, isVisibleCost, typeofActivityId, startDate,endDate } = req.body;
+        const { name, statusType, description, projectCost, isVisibleCost, typeofActivityId, currencyType , startDate,endDate } = req.body;
         if (!name || !statusType || !projectCost || !startDate) {
             return res.status(400).json({
                 success: false,
@@ -130,7 +130,7 @@ router.post('/', protect, authorize('admin'), upload.array('images'), async (req
             description,
             projectCost: parseFloat(projectCost),
             isVisibleCost:isVisibleCost,
-            // typeofActivityId: typeofActivityId, // Faaliyet türü ID'si (örneğin 1)
+            currencyType: currencyType || 'TRY', // Varsayılan olarak TRY
             startDate: startDate ? new Date(startDate) : new Date(), // Tarih formatını kontrol et
             endDate: endDate ? new Date(endDate) : new Date(), // Tarih formatını kontrol et
             imageUrls: req.files ? req.files.map(file => '/uploads/projects/' + file.filename) : [],            
@@ -167,7 +167,7 @@ router.post('/', protect, authorize('admin'), upload.array('images'), async (req
 router.put('/:id', protect, authorize('admin'),upload.array('images'), async (req, res) => {
     
     try {        
-        const { name, statusType, description, projectCost, isVisibleCost, typeofActivityId, startDate,endDate } = req.body;
+        const { name, statusType, description, projectCost, isVisibleCost, typeofActivityId, currencyType, startDate,endDate } = req.body;
         console.log('PUT /api/projects/:id endpoint çağrıldı' ,req.body);
 
         const project = await Project.findById(req.params.id);
@@ -188,6 +188,7 @@ router.put('/:id', protect, authorize('admin'),upload.array('images'), async (re
         project.statusType = statusType;
         project.projectCost = parseFloat(projectCost); 
         project.isVisibleCost = isVisibleCost;
+        project.currencyType = currencyType || 'TRY'; // Varsayılan olarak TRY
         if (typeofActivityId) {
             console.log('typeofActivityId:', typeofActivityId);
             project.typeofActivityId = typeofActivityId;

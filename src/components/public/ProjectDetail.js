@@ -7,6 +7,7 @@ import CHelmet from '../htmlComponent/CHelmet';
 import CCarousel from '../htmlComponent/CCarousel';
 import '../../css/HomePage.css';
 import '../../css/Projects.css';
+import { getCurrencySymbol } from '../../utils/utils';
 
 const ProjectDetail = () => {
     const navigate = useNavigate();
@@ -33,6 +34,8 @@ const ProjectDetail = () => {
                 statusType: projectData.statusType || '',
                 description: projectData.description || '',
                 projectCost: projectData.projectCost ? projectData.projectCost.toString() : '',
+                isVisibleCost: projectData.isVisibleCost || false,
+                currencyType: projectData.currencyType || 'TRY', // Varsayılan olarak TRY
                 startDate: projectData.startDate ? projectData.startDate.toString() : '',
                 endDate: projectData.endDate ? projectData.endDate.toString() : '',
                 imageUrls: projectData.imageUrls || '' 
@@ -92,24 +95,23 @@ const ProjectDetail = () => {
                     <div className="features-section">
                         <div>
                             <div className="row">
-                                <div className="col-12"> 
+                                {/* <div className="col-12"> 
                                     <div className="form-group">
-                                        {/* <label htmlFor="name">Proje Adı</label> */}
                                         <label className='justifyLabel' id="name" name="name"> {formData.name} , 
                                             {formData.typeofActivityId?.name} , {formData.isVisibleCost && formData.projectCost} 
                                             {new Date(formData.startDate).toLocaleDateString()}
                                             {formData.statusType === 'false' && formData.endDate && ` - ${new Date(formData.endDate).toLocaleDateString()}`}
                                         </label>
                                     </div>
-                                </div>
-                                {/* <div className="col-12"> 
+                                </div> */}
+                                <div className="col-12"> 
                                     <div className="form-group">
                                         <label htmlFor="name">Proje Adı</label>
                                         <label className='justifyLabel' id="name" name="name"> {formData.name}</label>
                                     </div>
-                                </div> */}
+                                </div>
                             </div>
-                            {/* {formData.typeofActivityId && formData.typeofActivityId.name &&
+                            {formData.typeofActivityId && formData.typeofActivityId.name &&
                             <div className="row">
                                 
                                 <div className="col-12"> 
@@ -118,18 +120,18 @@ const ProjectDetail = () => {
                                         <label className='justifyLabel' id="name" name="name"> {formData.typeofActivityId?.name}</label>
                                     </div>
                                 </div>
-                            </div>} */}
-                            {/* <div className="row">
+                            </div>}
+                            <div className="row">
                                 {formData.isVisibleCost && (
                                 <div className="col-6">
                                     <div className="form-group">
-                                        <label htmlFor="projectCost">Maliyeti (₺)</label>
-                                        <label className='justifyLabel' id="projectCost"name="projectCost">{formData.projectCost}</label>
+                                        <label htmlFor="projectCost">Maliyeti</label>
+                                        <label className='justifyLabel' id="projectCost"name="projectCost">{formData.projectCost} {getCurrencySymbol(formData.currencyType)}</label>
                                     </div>
                                 </div>
                                 )}
-                            </div> */}
-                            {/* <div className="row">
+                            </div>
+                            <div className="row">
                                 <div className="col-6">
                                     <div className="form-group">
                                         <label htmlFor="startDate">Başlama Tarihi</label>
@@ -144,11 +146,11 @@ const ProjectDetail = () => {
                                         </div>
                                     )}                                 
                                 </div>
-                            </div> */}
+                            </div>
                             <div className="row">
                                 <div className="col-12">
                                     <div className="form-group">
-                                        {/* <label htmlFor="description">Açıklama</label> */}
+                                        <label htmlFor="description">Açıklama</label>
                                         <div id="description" name="description">
                                             <div dangerouslySetInnerHTML={{ __html: formData.description }} />
                                         </div>

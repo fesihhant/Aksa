@@ -10,10 +10,13 @@ import CCrousel from '../htmlComponent/CCarousel';
 
 import '../../css/NewProduct.css';
 import { Checkbox } from '@mui/material';
-import { formatPrice, categoryTypeEnum, serverUrl , apiUrl } from '../../utils/utils';
+import { formatPrice, categoryTypeEnum, serverUrl , apiUrl,getCurrencySymbol, getCurrencyTypeOptions,
+    editorModules, editorFormats
+ } from '../../utils/utils';
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
+import { set } from 'mongoose';
 
 const EditProject = () => {
     const navigate = useNavigate();
@@ -109,6 +112,7 @@ const EditProject = () => {
             if (data.success) {
                 setFormData(data.project);
                 setIsActive(data.project.statusType === 'true'); // Checkbox durumunu ayarla
+                setIsVisibleCost(data.project.isVisibleCost === 'true'); // Checkbox durumunu ayarla
                 
                 if (data.project.imageUrls && data.project.imageUrls.length > 0) {
                     setImages(data.project.imageUrls.map(url => `${serverUrl}${url}`)); // Resim URL'lerini ayarlıyoruz
@@ -198,6 +202,7 @@ const EditProject = () => {
             formDataToSend.append('statusType', isActive ? 'true' : 'false'); // Checkbox durumu
             formDataToSend.append('projectCost', formData.projectCost);
             formDataToSend.append('isVisibleCost', isVisibleCost ? 'true' : 'false'); // Checkbox durumu
+            formDataToSend.append('currencyType', formData.currencyType || 'TRY'); // Varsayılan olarak TRY
             formDataToSend.append('startDate', startDate ? startDate.toISOString() : '');
             formDataToSend.append('endDate', endDate ? endDate.toISOString() : null);
            
@@ -217,7 +222,7 @@ const EditProject = () => {
             const data = await response.json();
     
             if (data.success) {
-                navigate('/projectList'); // Projeler sayfasına yönlendirme
+                navigate('/projects'); // Projeler sayfasına yönlendirme
             } else {
                 setError(data.message || 'Bir hata oluştu');
             }
@@ -228,30 +233,7 @@ const EditProject = () => {
             setLoading(false);
         }
     };
-    
-    const editorModules = {
-        toolbar: [
-            [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-            [{size: []}],
-            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-            [{'list': 'ordered'}, {'list': 'bullet'}, 
-            {'indent': '-1'}, {'indent': '+1'}],
-            ['link', 'image', 'video'],
-            ['clean']
-        ],
-        clipboard: {
-            // toggle to add extra line breaks when pasting HTML:
-            matchVisual: false,
-        }
-    }
-
-    const editorFormats = [
-        'header', 'font', 'size',
-        'bold', 'italic', 'underline', 'strike', 'blockquote',
-        'list', 'bullet', 'indent',
-        'link', 'image', 'video'
-    ]
-       
+     
     return (
         <div className="home-container">
             <div className="main-content">
@@ -314,7 +296,7 @@ const EditProject = () => {
                     </div>
                     <div className="form-row">
                         <div className="form-group">
-                            <label htmlFor="projectCost">Maliyeti (₺)</label>
+                            <label htmlFor="projectCost">Maliyeti</label>
                             <input
                                 type="text"
                                 id="projectCost"
@@ -327,6 +309,25 @@ const EditProject = () => {
                                 required
                             />
                         </div> 
+                        <div className="form-group">
+                            <label htmlFor="currencyType">Para Birimi</label>
+                            <select
+                                id="currencyType"
+                                name="currencyType"
+                                value={formData.currencyType || 'TRY'}
+                                onChange={handleInputChange}
+                                required
+                            >
+                                <option value="">Seçiniz</option>
+                                {
+                                    getCurrencyTypeOptions().map((currency) => (
+                                        <option key={currency.value} value={currency.value}>
+                                            {getCurrencySymbol(currency.value)}
+                                        </option>
+                                    ))
+                                }
+                            </select>
+                        </div>
                     </div>  
                     
                     <div className="form-row">
@@ -398,13 +399,13 @@ const EditProject = () => {
                     <div className="form-group">
                         <label htmlFor="description">Açıklama</label>
                         <ReactQuill
-                            theme="snow"                            
+                            theme="snow"
                             style={{minHeight:'300px'}}
                             value={formData.description}
                             onChange={value => setFormData((prev) => ({ ...prev, description: value }))}   
                             placeholder="Açıklama giriniz..."
-                            modules={editorModules}
-                            formats={editorFormats}
+                            modules={editorModules()}
+                            formats={editorFormats()}
                         />
                     </div>
                     <div className="form-group">

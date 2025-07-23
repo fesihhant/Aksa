@@ -1,7 +1,10 @@
 
 .banner {
-    background-color: white;
-    color:black;
+    background:linear-gradient(59deg, #000000, transparent);
+    /* background: transparent; */
+    transition: background 0.3s;
+    /* background-color: transparent; */
+    color:white;
     padding-top: 15px;
     position: fixed;
     width: 100%;
@@ -9,6 +12,12 @@
     --tw-border-opacity: 1;
     z-index: 1000;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.banner.banner-scrolled,
+.banner.banner-hovered {
+    background: #fff;
+    color: black;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 .banner-visible {
     transform: translateY(0);
@@ -101,7 +110,7 @@
 .logout-button {
     /* background-color: #d9e1dd; */
     color: black;
-    border: 1px solid white;
+    /* border: 1px solid white; */
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
@@ -122,9 +131,9 @@
 
 .login-link,
 .register-link {
-    background-color: #F2F5F5;
+    /* background-color: #F2F5F5;
     border: 1px solid white;
-    color: black;
+    color: black; */
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
@@ -142,7 +151,7 @@
 @media (max-width: 768px) {
     .banner {
         left: 200px; /* Mobilde daha dar sidebar */
-        position: unset;
+        position: sticky
     }
 
     .banner-content {

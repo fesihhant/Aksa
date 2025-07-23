@@ -215,28 +215,49 @@ export const ModalMessage = ({ message, type, onClose }) => {
 
 export const editorModules = () => {
     return {
-    toolbar: [
-        [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
-        [{size: []}],
-        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-        [{'list': 'ordered'}, {'list': 'bullet'}, 
-        {'indent': '-1'}, {'indent': '+1'}],
-        ['link', 'image', 'video'],
-        ['clean']
-    ],
-    clipboard: {
-        // toggle to add extra line breaks when pasting HTML:
-        matchVisual: false,
+        toolbar: [
+            [{ 'header': '1'}, {'header': '2'}, { 'font': [] }],
+            [{size: []}],
+            ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+            [{'list': 'ordered'}, {'list': 'bullet'}, 
+            {'indent': '-1'}, {'indent': '+1'}],
+            [{ 'color': [] }, { 'background': [] }], // <-- renk ve arka plan ekledik
+            ['link', 'image', 'video'],
+            ['clean']
+        ],
+        clipboard: {
+            matchVisual: false,
+        }
     }
-}
 }
 
 export const editorFormats = () => {
     return [
-    'header', 'font', 'size',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image', 'video'
-]   
+        'header', 'font', 'size',
+        'bold', 'italic', 'underline', 'strike', 'blockquote',
+        'list', 'bullet', 'indent',
+        'link', 'image', 'video',
+        'color', 'background' // <-- renk ve arka plan ekledik
+    ]   
+}
+
+export function getCurrencySymbol(type) {
+    switch (type) {
+        case 'TRY': return '₺';
+        case 'USD': return '$';
+        case 'EUR': return '€';
+        case 'GBP': return '£';
+        case 'JPY': return '¥';
+        default: return '';
+    }
+}
+export function getCurrencyTypeOptions() {
+    return [
+        { value: 'TRY', label: 'Türk Lirası (₺)' },
+        { value: 'USD', label: 'Amerikan Doları ($)' },
+        { value: 'EUR', label: 'Euro (€)' },
+        { value: 'GBP', label: 'İngiliz Sterlini (£)' },
+        { value: 'JPY', label: 'Japon Yeni (¥)' }
+    ];
 }
    

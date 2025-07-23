@@ -12,36 +12,14 @@ const Breadcrumbs = () => {
                 return 'Giriş';
             case 'register':
                 return 'Kayıt Ol';
-            case 'resetpassword':
+            case 'reset-password':
                 return 'Şifremi Sıfırla';
             case 'profile':
                 return 'Profil';
-            // case 'reservations':
-            //     return 'Rezervasyonlar';  
-            // case 'attendedEvents':
-            //     return 'Katıldığım Etkinlikler';   
-            case 'favorites':
-                return 'Favorilerim';
-            case 'notifications':{
-                return 'Bildirimler';
-            }                
             case 'new':
                 return 'Yeni';
             case 'edit':
                 return 'Güncelle';
-            // case 'products':
-            //     return 'Ürünler';
-            // case 'product':
-            //     return 'Ürün';
-            // case 'editProduct':
-            //     return 'Güncelle';
-            // case 'addProduct':
-            //     return 'Yeni';
-            // case 'product-detail':
-            //     return 'Ürün detayı';
-
-            case 'activities':
-                return 'Faaliyetlerimiz';
             case 'projects':
                 return 'Projeler';
             case 'projectList':
@@ -53,10 +31,7 @@ const Breadcrumbs = () => {
             case 'addProject':
                 return 'Yeni';
             case 'project-detail':
-                return 'Proje detayı';                
-            // case 'cart':
-            //     return 'Sepetim';                
-
+                return 'Proje detayı';   
             case 'references':
                 return 'Referanslar';
             case 'reference':   
@@ -134,11 +109,6 @@ const Breadcrumbs = () => {
                 return 'Diller';
             case 'translations':
                 return 'Çeviriler';
-            
-            // case 'orders':
-            //     return 'Siparişler';   
-            case 'locations':
-                return 'Adresler';
             default:
                 return '';
         }

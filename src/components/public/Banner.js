@@ -271,9 +271,23 @@ const Banner = ({ storedUser, setStoredUser }) => {
         changeModalStyle(modalName, isActive);
     }
     
+    const [scrolled, setScrolled] = useState(false);
+    const [hovered, setHovered] = useState(false);
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 50);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
  
     return (
-        <div id='banner' className='banner'>
+        <div
+            id="banner"
+            className={`banner${scrolled ? " banner-scrolled" : ""}${hovered ? " banner-hovered" : ""}`}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
+        >
            
             <div className="banner-content">
                 <div class="navbarlogo">
@@ -475,7 +489,7 @@ const Banner = ({ storedUser, setStoredUser }) => {
                                  <div class="form-field">
                                      <div class="form-field-wrapper">
                                          <label for="email">E-posta</label>
-                                         <input type="email" name="email" id="email" disabled={loading} required/>
+                                         <input type="email" name="email" id="email" onChange={(e) => setFormData({ ...formData, email: e.target.value })} disabled={loading} required/>
                                      </div>
                                  </div>
                                  <div class="form-field">

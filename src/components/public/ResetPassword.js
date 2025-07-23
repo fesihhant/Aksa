@@ -2,13 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumbs from './Breadcrumbs';
 import {apiUrl} from '../../utils/utils';
- 
+import {changeModalStyle} from '../../utils/loginUtil';
+import { set } from 'mongoose';
+
 const ResetPassword = () => {
     console.log('ResetPassword render edildi');
     const navigate = useNavigate();
     const [tokenValid, setTokenValid] = useState(false);   
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+        const [success, setSuccess] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     let { resetToken, activatedToken } = useParams();
@@ -57,16 +60,25 @@ const ResetPassword = () => {
             setError('Şifreler uyuşmuyor!');
             return;
         }
+        setLoading(true);
+        setError('');
         console.log('Token değişti mi :', resetToken);
-        const res = await fetch(`${apiUrl}/api/auth/reset-password`, {
+        const res = await fetch(`${apiUrl}/auth/reset-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ resetToken, password })
         });
         const data = await res.json();
         if (data.success) {
-            alert('Şifreniz başarıyla güncellendi!');
-            navigate('/login');
+            setSuccess('Şifreniz başarıyla güncellendi, lütfen giriş yapın.');
+            setError('');
+            setTimeout(() => {
+                changeModalStyle('login',true);
+                setLoading(false);
+                }, 5000);
+            
+            
+            // navigate('/login');
         } else {
             setError(data.message);
         }
@@ -74,7 +86,7 @@ const ResetPassword = () => {
 
     const pathnames = [
     {
-        path: 'Yeni Şifre ekranı',
+        path: 'Şifre güncelleme ekranı',
         link: '',
     }];
     
@@ -88,13 +100,14 @@ const ResetPassword = () => {
                 <Breadcrumbs breadcrumbs={pathnames} />
                 <hr></hr>
                 <br></br>
-                <form onSubmit={handleSubmit} className="edit-user-form">
+                <form onSubmit={handleSubmit} className="form-container">
                      <div className="page-header">
                          <h2>Yeni Şifre Belirle</h2>
                      </div>               
                      <hr></hr>
                      <br></br>
                      {error && <div style={{ color: 'red' }}>{error}</div>}
+                     {success && <div style={{ color: 'green' }}>{success}</div>}
                      <div className="form-group">
                          <label htmlFor="password">Yeni Şifre</label>
                          <input
@@ -117,7 +130,12 @@ const ResetPassword = () => {
                              required
                          />
                      </div>
-                     <button type="submit">Şifreyi Güncelle</button>
+                     <div className='form-actions'>
+                        <div className='form-group'>
+                            <label htmlFor="submit"></label>
+                            <button type="submit" className='submit-button' disabled={loading}>Şifreyi Güncelle</button>
+                        </div>
+                     </div>
                   
                  </form>
             </div> 
