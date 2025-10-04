@@ -44,9 +44,12 @@ const Users = () => {
     const [deleteId, setDeleteId] = useState(null);
 
     const handleDelete = async (itemId) => {
-        const success = await deleteData(`/categories/${itemId}`);
+        const success = await deleteData(`/users/${itemId}`);
         if (success) {
-            setData(users.filter(p => p._id !== itemId));
+            setData(users =>
+            users.map(user =>
+                user._id === itemId ? { ...user, isActivated: false } : user
+            ));
             
         } else if (deleteError) {
             setError(deleteError);
@@ -108,6 +111,17 @@ const Users = () => {
             valueGetter: (params) => params.row.role || 'user'
         },
         {
+            field: 'isActivated',
+            headerName: 'Durumu',
+            width: 120,
+            // valueGetter: (params) => params.row.isActivated ?  'Aktif' : 'Pasif',
+            renderCell: (params) => (   
+                <span style={{ color: params.row.isActivated ? 'green' : 'red' }}>
+                    {params.row.isActivated ? 'Aktif' : 'Pasif'}
+                </span>
+            )
+        },
+        {
             field: 'createdAt',
             headerName: 'Kayıt Tarihi',
             width: 150,
@@ -135,6 +149,7 @@ const Users = () => {
                     >
                         Düzenle
                     </button>
+                   { params.row.isActivated && 
                     <button
                         onClick={async (e) => {
                             e.stopPropagation();                            
@@ -152,6 +167,7 @@ const Users = () => {
                     >
                         Sil
                     </button>
+                }
                 </div>
             )
         }

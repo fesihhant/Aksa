@@ -18,7 +18,6 @@ const TermsOfServiceList = () => {
     useEffect(() => {        
         if (apiData && apiData.termsOfService) {
             if (apiData.success && apiData.termsOfService.length > 0) {  
-                console.log('TermsOfService ', apiData.termsOfService);
                 setData(apiData.termsOfService);
             } 
         }

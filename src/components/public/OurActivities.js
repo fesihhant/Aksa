@@ -3,8 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Breadcrumbs from './Breadcrumbs';
 import CHelmet from '../htmlComponent/CHelmet';
+import EmptyRecord from './EmptyRecord';
 
-import {substringValue, apiUrl} from '../../utils/utils';
+import {substringValue, apiUrl, serverUrl} from '../../utils/utils';
 
 
 const OurActivities = () => {
@@ -13,10 +14,10 @@ const OurActivities = () => {
     const [projects, setProjects] = useState([]);
     const [categoryName, setCategoryName] = useState('');
     const [statusType, setStatusType] = useState('');
+    const [activeStatus, setActiveStatus] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
-    
-    const queryParams = new URLSearchParams(location.search);
-    const categoryId = queryParams.get('categoryId');
+     
+    const categoryId = location.state?.categoryId;
 
     useEffect(() => {
         
@@ -81,68 +82,59 @@ const OurActivities = () => {
         link: '',
     }];
     
+    const filteredprojects = projects
+        .filter(x =>
+            (x.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            x.description.toLowerCase().includes(searchTerm.toLowerCase()))
+            &&
+            (statusType === '' || x.statusType === statusType)
+        );
     return (
         <>
         <CHelmet pageName="Faaliyetlerimiz" content={categoryName} categoryName={categoryName} />
         <div className="home-container">
             <div className="main-content">
-                <Breadcrumbs breadcrumbs={pathnames} />
-                <div className="page-header">
-                    {/* <h1 className='headerClass'><i class="fas fa-project-diagram"></i> Faaliyetlerimiz</h1> */}
-                    <div className="header-actions"> 
-                        <div className="search-box">
-                            <select
-                                name="statusType"
-                                onChange={e => setStatusType(e.target.value)}
-                            >
-                                <option select value="">Tümü</option>
-                                <option value="true">Devam Eden</option>
-                                <option value="false">Biten</option>
-                            </select>
-                            <input
-                                type="text"
-                                placeholder="Ara..."
-                                value={searchTerm}
-                                onChange={handleSearch}
-                                className="search-input"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <hr></hr>
-                <br></br>
-                <div className="projects-grid">
-                    {projects.length === 0 && (
-                        <div className="empty-data"> 
-                            {categoryName ? `${categoryName} kategorisine ait proje bulunamadı.` : 'Proje bulunamadı.'  }
-                        </div>
+                <Breadcrumbs /> 
+                <ul className="filter-list">
+                    <li
+                        className={activeStatus === '' ? 'active' : ''}
+                        onClick={() => { setStatusType(''); setActiveStatus(''); }}
+                    >
+                        Tümü
+                    </li>
+                    <li
+                        className={activeStatus === 'true' ? 'active' : ''}
+                        onClick={() => { setStatusType('true'); setActiveStatus('true'); }}
+                    >
+                        Tamamlanan Projeler
+                    </li>
+                    <li
+                        className={activeStatus === 'false' ? 'active' : ''}
+                        onClick={() => { setStatusType('false'); setActiveStatus('false'); }}
+                    >
+                        Devam Eden Projeler
+                    </li>
+                </ul>
+                <div className="box-grid" style={{ gridTemplateColumns: `${filteredprojects.length > 0 && filteredprojects.length < 3 ? 'repeat(auto-fit, minmax(0,400px))' : 'repeat(auto-fit, minmax(400px, 1fr))'}` }}>
+                    {filteredprojects.length === 0 && (
+                        <EmptyRecord 
+                            message={categoryName ? `${categoryName} kategorisine ait proje bulunamadı.` : 'Proje bulunamadı.'}                            
+                        />
                     )}
-                    {projects
-                        .filter(x =>
-                            (x.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                            x.description.toLowerCase().includes(searchTerm.toLowerCase()))
-                            &&
-                            (statusType === '' || x.statusType === statusType)
-                        )                    
+                    {filteredprojects                 
                         .map(p => (
-                        <div key={p.id} className="project-card">
-                            <div className="project-image">
+                        <div key={p.id} className="box-card">
+                            <div className="box-card-image">
                                 {p.imageUrls && p.imageUrls.length > 0 ? (
-                                    <img loading="lazy" alt={p.name} src={`http://localhost:5001${p.imageUrls[0]}`} />
+                                    <img loading="lazy" alt={p.name} src={`${serverUrl}${p.imageUrls[0]}`} />
                                 ) : (
-                                    <img loading="lazy" alt={p.name} src={`http://localhost:5001/uploads/projects/default.png`} />
+                                    <img loading="lazy" alt={p.name} src={`${serverUrl}/uploads/projects/default.png`} />
                                 )}
                             </div>
-                            <div className="project-content">
+                            <div className="box-cart-content" onClick={() => navigate('/project-detail', { state: {projectData: p }})}>
+                                <div className="title">
                                 <h3>{substringValue(p.name,150)}</h3>
-                                {p.isVisibleCost && <p className="project-cost">{p.projectCost}</p>}
-                                <p>{substringValue(p.description,150)}</p>
-                                <button 
-                                    className="project-details-btn"
-                                    onClick={() => navigate('/project-detail', { state: {projectData: p }})}
-                                >
-                                    Detayları Gör
-                                </button>
+                                </div>
                             </div>
                         </div>
                     ))}

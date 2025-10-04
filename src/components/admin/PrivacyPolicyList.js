@@ -18,7 +18,6 @@ const PrivacyPolicyList = () => {
     useEffect(() => {        
         if (apiData && apiData.privacyPolicy) {
             if (apiData.success && apiData.privacyPolicy.length > 0) {  
-                console.log('PrivacyPolicy ', apiData.privacyPolicy);
                 setData(apiData.privacyPolicy);
             } 
         }

@@ -1,9 +1,10 @@
 
 .banner {
-    background:linear-gradient(59deg, #000000, transparent);
-    /* background: transparent; */
-    transition: background 0.3s;
-    /* background-color: transparent; */
+    background:linear-gradient(59deg, #000000, transparent); 
+    transition: background 0.3s; 
+    /*background: linear-gradient(270deg, #003da6, #0050c0, #003da6, #0050c0);
+    background-size: 400% 400%;
+    transition: background 0.5s; */
     color:white;
     padding-top: 15px;
     position: fixed;
@@ -17,7 +18,8 @@
 .banner.banner-hovered {
     background: #fff;
     color: black;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    box-shadow: 0 2px 8px rgba(0,0,0,1);
+    /* animation: bannerFlow 2s linear infinite; */
 }
 .banner-visible {
     transform: translateY(0);
@@ -32,6 +34,14 @@
     .banner-hidden {
         transform: translateY(0) !important;
     }
+}
+@keyframes bannerFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
 }
 .banner-content {
     display: flex;
@@ -63,14 +73,6 @@
     align-items: center;
     padding-right: 5px;
 }
-/* .hamburger-menu {
-  display: none;
-  cursor: pointer;
-  font-size: 24px;
-  margin-right: 20px;
-  color: rgb(76, 175, 80);
-} */
-
 /* Şifre input alanı için wrapper */
 .password-wrapper {
   position: relative;

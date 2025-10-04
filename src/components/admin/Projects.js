@@ -4,7 +4,7 @@ import CListContainer from '../htmlComponent/CListContainer';
 import { useApiCall, useDeleteApiCall } from '../../utils/apiCalls';
 import ModalMessage from '../public/ModalMessage';
 import '../../css/Products.css';
-import { substringValue } from '../../utils/utils';
+import { serverUrl, substringValue } from '../../utils/utils';
 
 const Projects = () => {
     const navigate = useNavigate();
@@ -80,7 +80,7 @@ const Projects = () => {
                     
                     {params.value && params.value.length > 0 ? (
                                     <img
-                                        src={`http://localhost:5001${params.value[0]}`}
+                                        src={`${serverUrl}${params.value[0]}`}
                                         alt={params.row.name}
                                         style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
                                     />
@@ -90,6 +90,23 @@ const Projects = () => {
                 </div>
             )
         },
+        {
+            field: 'name',
+            headerName: 'Proje Adı',
+            flex: 1,
+            minWidth: 150,
+            renderCell: (params) => (
+                <div style={{ fontWeight: 'bold', color: '#333' }}>
+                    {params.value}
+                </div>
+            )
+        },
+        {
+            field: 'typeofActivityId.name',
+            headerName: 'Faaliyet Türü',
+            width: 250,
+            valueGetter: (params) => params.row.typeofActivityId?.name || 'Belirtilmemiş'
+        },      
         {
             field: 'statusType',
             headerName: 'Durumu',
@@ -121,29 +138,7 @@ const Projects = () => {
                     currency: 'TRY'
                 }).format(params.value);
             }
-        },
-        {
-            field: 'name',
-            headerName: 'Proje Adı',
-            flex: 1,
-            minWidth: 150,
-            renderCell: (params) => (
-                <div style={{ fontWeight: 'bold', color: '#333' }}>
-                    {params.value}
-                </div>
-            )
-        },
-        {
-            field: 'description',
-            headerName: 'Açıklama',
-            flex: 1,
-            minWidth: 200,
-            valueFormatter: (params) => {
-                const description = params.value || '';
-                return substringValue(description, 150);
-            }
-            
-        },
+        },  
         {
             field: 'actions',
             headerName: 'İşlemler',
@@ -175,7 +170,14 @@ const Projects = () => {
             )
         }
     ];
-
+    {loading && (
+        <div className="loading-spinner">
+            <div className="spinner"></div>
+        </div>
+    )}
+    if (error) {
+        return <div className="error-message">{error}</div>;
+    }
     return (
         <>
         <CListContainer pageName={'projects'}

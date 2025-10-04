@@ -21,7 +21,6 @@ const SocialMediaList = () => {
                       return;
                   }
                   let url = `${apiUrl}/social-media`;
-                  console.log('url : ', url);
                   const response = await fetch(url, {
                       method: 'GET',
                       headers: {

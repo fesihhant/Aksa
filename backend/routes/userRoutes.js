@@ -115,8 +115,6 @@ router.post('/register', async (req, res) => {
 
         //token şifrele
         const resetToken = EncryptedOrDecryptedJSFormat(userResponse._id.toString(), true);
-        console.log('Şifrelenen EncryptedOrDecryptedJSFormat resetToken:', resetToken);
-        console.log('Link adresine verilen encodeURIComponent token :',encodeURIComponent(resetToken))
         const resetLink = `${process.env.LOCAL_WEB_ADDRESS}/reset-password/${encodeURIComponent(resetToken)}`;
 
         if (userResponse) {      
@@ -159,9 +157,6 @@ router.post('/register', async (req, res) => {
 // Yeni kullanıcı oluştur - Sadece admin
 router.post('/', protect, authorize('admin'), upload.single('avatar'), async (req, res) => {
     try {
-        console.log('Gelen veriler:', req.body);
-        console.log('Yüklenen dosya:', req.file);
-
         const { fullName, email, phone, password, avatarType, role } = req.body;
 
         if (!fullName || !email || !password) {
@@ -203,8 +198,6 @@ router.post('/', protect, authorize('admin'), upload.single('avatar'), async (re
             userData.avatarType = 'preset';
         }
 
-        console.log('Oluşturulacak kullanıcı:', userData);
-
         const user = new User(userData);
         await user.save();
 
@@ -227,9 +220,6 @@ router.post('/', protect, authorize('admin'), upload.single('avatar'), async (re
 // Kullanıcı güncelle - Admin veya kendisi
 router.put('/:id', protect, upload.single('avatar'), async (req, res) => {
     try {
-        console.log('Güncelleme verileri:', req.body);
-        console.log('Yüklenen dosya:', req.file);
-
         const { fullName, email, password, phone, avatarType, role } = req.body;
         const userId = req.params.id;
 
@@ -304,8 +294,6 @@ router.put('/:id', protect, upload.single('avatar'), async (req, res) => {
             updateData.avatarType = 'preset';
         }
 
-        console.log('Güncellenecek veriler:', updateData);
-
         const user = await User.findByIdAndUpdate(
             userId,
             updateData,
@@ -332,4 +320,28 @@ router.put('/:id', protect, upload.single('avatar'), async (req, res) => {
     }
 });
 
+// Kullanıcı silme - Sadece admin
+router.delete('/:id', protect, authorize('admin'), async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'Kullanıcı bulunamadı'
+            });
+        }
+        user.isActivated = false; // Kullanıcıyı silmek yerine pasifleştiriyoruz
+        await user.save();
+        res.json({
+            success: true,
+            message: 'Kullanıcı başarıyla silindi'
+        });
+    } catch (error) {
+        console.error('Kullanıcı silme hatası:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Kullanıcı silinirken bir hata oluştu'
+        });
+    }
+}); 
 module.exports = router;

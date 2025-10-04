@@ -6,7 +6,6 @@ import {changeModalStyle} from '../../utils/loginUtil';
 import { set } from 'mongoose';
 
 const ResetPassword = () => {
-    console.log('ResetPassword render edildi');
     const navigate = useNavigate();
     const [tokenValid, setTokenValid] = useState(false);   
     const [loading, setLoading] = useState(false);
@@ -16,14 +15,10 @@ const ResetPassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     let { resetToken, activatedToken } = useParams();
 
-    console.log('mailden gelen token', resetToken);
     resetToken = decodeURIComponent(resetToken);
     activatedToken = decodeURIComponent(activatedToken);
-    console.log('decodeURIComponent resetToken:', resetToken);
-    console.log('decodeURIComponent activatedToken:', activatedToken);
 
     useEffect(() => {
-        console.log('useEffect çalıştı', resetToken);
         const fetchCheckResetToken = async () => {
             try {
                 setLoading(true);
@@ -33,7 +28,6 @@ const ResetPassword = () => {
 
                 if (data.success) {
                     setTokenValid(true);
-                    console.log('check işlemi başarılı')
                 } else {
                     setError(data.message);
                     setTokenValid(false);
@@ -62,13 +56,15 @@ const ResetPassword = () => {
         }
         setLoading(true);
         setError('');
-        console.log('Token değişti mi :', resetToken);
+
         const res = await fetch(`${apiUrl}/auth/reset-password`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ resetToken, password })
         });
+
         const data = await res.json();
+        
         if (data.success) {
             setSuccess('Şifreniz başarıyla güncellendi, lütfen giriş yapın.');
             setError('');

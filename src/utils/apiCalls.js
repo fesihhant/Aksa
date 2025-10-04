@@ -83,6 +83,6 @@ export const useDeleteApiCall = () => {
             setLoading(false);
         }
     };
-
+ 
     return { apiSuccess, apiError, apiLoading, deleteData };
 };

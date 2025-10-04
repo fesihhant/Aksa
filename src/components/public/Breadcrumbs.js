@@ -41,19 +41,19 @@ const Breadcrumbs = () => {
             case 'addReference':
                 return 'Yeni';
 
-            case 'introductionBooklet':
+            case 'introductionbooklet':
                 return 'Tanıtım Kitapçığı';
 
             case 'socialmediaList':
                 return 'Sosyal Medya Hesapları';
-            case 'socialmedia':
-                return 'Sosyal Medya Hesabı';
+            case 'social-media':
+                return 'Sosyal Medya Hesabları';
 
              
             case 'about':
                 return 'Biz Kimiz';     
-            case 'editAbout':
-                return 'Güncelle';       
+            case 'editabout':
+                return 'Biz Kimiz Güncelle';       
             case 'contact':
                 return 'İletişim';           
             case 'home':
@@ -109,6 +109,10 @@ const Breadcrumbs = () => {
                 return 'Diller';
             case 'translations':
                 return 'Çeviriler';
+                
+            case 'activities':
+                return 'Faaliyetlerimiz';
+            
             default:
                 return '';
         }
@@ -122,6 +126,7 @@ const Breadcrumbs = () => {
 
     let pathSoFar = '';
     return (
+        <>
         <nav className="breadcrumbs">
             <Link to="/">Anasayfa</Link>
             {segments
@@ -140,6 +145,7 @@ const Breadcrumbs = () => {
                 );
             })}
         </nav>
+        </>
     );
 }
 export default Breadcrumbs;

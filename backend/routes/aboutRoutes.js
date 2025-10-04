@@ -18,26 +18,26 @@ const { protect, authorize } = require('../middleware/auth');
 // Yeni kayıt oluştur - Sadece admin
 router.post('/', protect, authorize('admin'), async (req, res) => {
     try { 
-        console.log('POST /api/about endpoint çağrıldı', req.body);
+        const { aboutText, visionText,missionText, phoneNumber,email,address,fax } = req.body;
 
-        const { aboutText, visionText,missionText } = req.body;
-        console.log('body : ', req.body);
-
-        if (!aboutText || !visionText || !missionText) {    
+        if (!aboutText || !visionText || !missionText || !phoneNumber || !email || !address) {    
             return res.status(400).json({ success: false, message: 'Lüften tüm alanları doldurun' });
         }
 
         const newAbout = new Model({
             aboutText,
             visionText,
-            missionText
+            missionText,
+            phoneNumber,
+            email,  
+            address,
+            fax
         });
 
         await newAbout.save();
         res.status(201).json({ success: true, about: newAbout });
 
     } catch (error) {
-        console.error('Veri oluşturma hatası:', error);
         res.status(400).json({
             success: false,
             message: 'Veri oluşturulurken bir hata oluştu: ' + error.message
@@ -48,10 +48,10 @@ router.post('/', protect, authorize('admin'), async (req, res) => {
 // Kaydı güncelle 
 router.put('/:id', protect, authorize('admin'), async (req, res) => {
     try {
-        const { aboutText, visionText, missionText } = req.body;
+        const { aboutText, visionText, missionText, phoneNumber, email, address,fax } = req.body;
         const { id } = req.params;
 
-        const updateData = {aboutText, visionText, missionText};
+        const updateData = {aboutText, visionText, missionText, phoneNumber, email, address, fax };
         const updatedAbout = await Model.findByIdAndUpdate(
             id,
             updateData,

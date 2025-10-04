@@ -4,10 +4,10 @@ import { Helmet} from 'react-helmet-async';
 
 import Breadcrumbs from '../public/Breadcrumbs';
 import CHelmet from '../htmlComponent/CHelmet';
-import CCarousel from '../htmlComponent/CCarousel';
+import CCrousel from '../htmlComponent/CCrousel';
 import '../../css/HomePage.css';
 import '../../css/Projects.css';
-import { getCurrencySymbol } from '../../utils/utils';
+import {serverUrl, getCurrencySymbol, getYoutubeEmbedUrl } from '../../utils/utils';
 
 const ProjectDetail = () => {
     const navigate = useNavigate();
@@ -20,7 +20,8 @@ const ProjectDetail = () => {
             description: '',
             price: '',
             stockQuantity: '',
-            typeofActivityId: null
+            typeofActivityId: null,
+            videoUrl : '',
 
         });
         const [imagePreviews, setImagePreviews] = useState([]);
@@ -38,14 +39,14 @@ const ProjectDetail = () => {
                 currencyType: projectData.currencyType || 'TRY', // Varsayılan olarak TRY
                 startDate: projectData.startDate ? projectData.startDate.toString() : '',
                 endDate: projectData.endDate ? projectData.endDate.toString() : '',
-                imageUrls: projectData.imageUrls || '' 
+                imageUrls: projectData.imageUrls || '',
+                videoUrl : projectData.videoUrl || ''
             });
 
             if (projectData.imageUrls && projectData.imageUrls.length > 0) {
-                setImagePreviews(projectData.imageUrls.map(url => `http://localhost:5001${url}`)); // Resim önizlemelerini ayarlıyoruz
+                setImagePreviews(projectData.imageUrls.map(url => `${serverUrl}${url}`)); // Resim önizlemelerini ayarlıyoruz
             }
         } else {
-            console.log('No product data, resetting form'); // Debug için
             setFormData({
                 name: '',
                 typeofActivityId: null,
@@ -54,24 +55,14 @@ const ProjectDetail = () => {
                 projectCost: '',
                 startDate: '',
                 endDate: '',
-                imageUrls: []
+                imageUrls: [],
+                videoUrl : ''
             });
             setImagePreviews([]);
         }
     }, [projectData]);
     
     
-    const pathnames = [
-        {
-          path: 'Projeler',
-          link: -1,
-        },
-        {
-          path: 'Proje Detayları',
-          link: '',
-        }
-    ];
-
     const pageName = projectData?.name || 'Proje Detayları';
     const content = projectData
                         ? (projectData.description
@@ -86,24 +77,14 @@ const ProjectDetail = () => {
             <CHelmet pageName={pageName} content={content} categoryName={categoryName} />
             <div className="home-container">
                 <div className="main-content">
-                    <Breadcrumbs breadcrumbs={pathnames} />
+                    <Breadcrumbs />
                     <div className="page-header">
-                        {/* <h1 className='headerClass'><i class="fa-solid fa-circle-info"></i> Proje Detay</h1>  */}
                     </div>                   
                     <hr></hr>
                     <br></br>
                     <div className="features-section">
                         <div>
                             <div className="row">
-                                {/* <div className="col-12"> 
-                                    <div className="form-group">
-                                        <label className='justifyLabel' id="name" name="name"> {formData.name} , 
-                                            {formData.typeofActivityId?.name} , {formData.isVisibleCost && formData.projectCost} 
-                                            {new Date(formData.startDate).toLocaleDateString()}
-                                            {formData.statusType === 'false' && formData.endDate && ` - ${new Date(formData.endDate).toLocaleDateString()}`}
-                                        </label>
-                                    </div>
-                                </div> */}
                                 <div className="col-12"> 
                                     <div className="form-group">
                                         <label htmlFor="name">Proje Adı</label>
@@ -146,7 +127,7 @@ const ProjectDetail = () => {
                                         </div>
                                     )}                                 
                                 </div>
-                            </div>
+                            </div>                          
                             <div className="row">
                                 <div className="col-12">
                                     <div className="form-group">
@@ -163,13 +144,34 @@ const ProjectDetail = () => {
                                         <div className="avatar-options">
                                             <div className="upload-section">    
                                                 {imagePreviews && imagePreviews.length > 0 && (
-                                                    <CCarousel imageList={imagePreviews} />
+                                                    <CCrousel imageList={imagePreviews} />
                                                 )}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div> 
+                                                         
+                            <div className="row">
+                                <div className="col-12">
+                                    <div className="form-group"> 
+                                        <div className="avatar-options">
+                                            {formData.videoUrl && formData.videoUrl.trim() !== '' && (
+                                                <div className="video-container">
+                                                    <iframe
+                                                        width="100%"
+                                                        height="800"
+                                                        src={getYoutubeEmbedUrl(formData.videoUrl)}
+                                                        title="Project Video" 
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowFullScreen
+                                                    ></iframe>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
                         </div> 
                     </div>
                 </div>

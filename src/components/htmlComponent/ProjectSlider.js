@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { serverUrl } from '../../utils/utils';
+import '../../css/HomePage.css';
 
 const ProjectSlider = ({ projects, navigate }) => {
     const [current, setCurrent] = useState(0);
@@ -33,14 +34,10 @@ const ProjectSlider = ({ projects, navigate }) => {
             <button
                 className="slider-arrow left"
                 onClick={goToPrev}
-                style={{
-                    position: 'absolute', left: 40, top: '50%', transform: 'translateY(-50%)',
-                    zIndex: 2, background: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer'
-                }}
             >
                 &#8592;
             </button>
-            <div className="project-slider" style={{ width: '98vw', height: '60vw', maxHeight: 700, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="project-slider" style={{ width: '100%', height: '60vw', maxHeight: 700, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <div
                     style={{
                         position: 'relative',
@@ -77,10 +74,6 @@ const ProjectSlider = ({ projects, navigate }) => {
             <button
                 className="slider-arrow right"
                 onClick={goToNext}
-                style={{
-                    position: 'absolute', right: 60, top: '50%', transform: 'translateY(-50%)',
-                    zIndex: 2, background: '#fff', border: 'none', borderRadius: '50%', width: 36, height: 36, cursor: 'pointer'
-                }}
             >
                 &#8594;
             </button>

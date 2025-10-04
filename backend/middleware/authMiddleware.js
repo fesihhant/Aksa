@@ -5,9 +5,6 @@ const authenticateToken = async (req, res, next) => {
     try {
         const authHeader = req.headers['authorization'];
         const token = authHeader && authHeader.split(' ')[1];
-        console.log('token:', token);
-        console.log('user:', User);
-
 
         if (!token) {
             return res.status(401).json({ success: false, message: 'Token bulunamadı' });
@@ -23,7 +20,6 @@ const authenticateToken = async (req, res, next) => {
         req.user = user;
         next();
     } catch (error) {
-        console.error('Auth middleware error:', error);
         if (error.name === 'JsonWebTokenError') {
             return res.status(401).json({ success: false, message: 'Geçersiz token formatı' });
         } else if (error.name === 'TokenExpiredError') {

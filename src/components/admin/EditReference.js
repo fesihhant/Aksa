@@ -20,10 +20,7 @@ const EditReference = () => {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        console.log('useEffect triggered with referenceData:', referenceData); // Debug için
-
         if (referenceData) {
-            console.log('Setting form data with:', referenceData); // Debug için
             setFormData({
                 name: referenceData.name || '',
                 webLink:referenceData.webLink || '',
@@ -34,7 +31,6 @@ const EditReference = () => {
                 setImagePreview(`http://localhost:5001${referenceData.imageUrl}`);
             }
         } else {
-            console.log('No reference data, resetting form'); // Debug için
             setFormData({
                 name: '',
                 webLink:'',

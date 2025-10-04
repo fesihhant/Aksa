@@ -11,7 +11,7 @@ const IntroductionBookletSchema = new mongoose.Schema({
     fileUrl: {
         type: String,
         default: null
-    },
+    }, 
     createdAt: {
         type: Date,
         default: Date.now

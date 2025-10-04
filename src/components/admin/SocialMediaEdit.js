@@ -84,7 +84,6 @@ const [form, setForm] = useState({ name: '', mediaLink: '', active: true });
                 <Breadcrumbs breadcrumbs={pathnames} />
                 <form id="dataForm" onSubmit={handleSubmit} className="edit-form">
                     <div className="page-header">
-                        {/* <h1 className='headerClass'>{id ? 'Düzenle' : 'Yeni Hesap Ekle'}</h1> */}
                         <div className="form-actions">
                             <button 
                                 type="submit"
@@ -96,7 +95,7 @@ const [form, setForm] = useState({ name: '', mediaLink: '', active: true });
                             </button>
                             <button 
                                 type="button" 
-                                onClick={() => navigate('/products')}
+                                onClick={() => navigate('/social-media')}
                                 className="cancel-button"
                             >
                                 İptal

@@ -34,8 +34,8 @@ const Sidebar = () => {
         fetchCategories();
     }, []);
 
-    const handleCategoryClick = (categoryId) => {
-        navigate(`/activities?categoryId=${categoryId}`);
+    const handleCategoryClick = (catId) => {
+        navigate('/activities', { state: {categoryId: catId }});
     };
 
     return (

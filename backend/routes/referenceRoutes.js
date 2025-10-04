@@ -50,7 +50,6 @@ router.get('/referenceList', async (req, res) => {
 // Tüm referansları getir - Sadece admin
 router.get('/', protect, async (req, res) => {
     try {
-        console.log('GET /api/references endpoint çağrıldı');
         const references = await Reference.find();
         res.json({ 
             success: true, 
@@ -145,14 +144,20 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
         }
 
         // Referans resmini sil
-        if (reference.imageUrl) {
-            const imagePath = path.join(__dirname, '..', reference.imageUrl);
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath);
+        const imageUrl = reference.imageUrl;
+        await reference.deleteOne();
+
+        try {
+            if (imageUrl && typeof imageUrl === 'string') {
+                const imagePath = path.join(__dirname, '..', imageUrl);
+                if (fs.existsSync(imagePath)) {
+                    fs.unlinkSync(imagePath);
+                }
             }
+        } catch (error) {
+            console.error('Resim silinirken hata:', error);
         }
 
-        await reference.remove();
         res.json({ success: true, message: 'Referans başarıyla silindi' });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

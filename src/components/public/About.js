@@ -60,19 +60,19 @@ const About = () => {
                     {formData && formData.aboutText &&
                         <>
                             <h2>HAKKIMIZDA</h2>
-                            <p>{formData.aboutText}</p>
+                            <div dangerouslySetInnerHTML={{ __html: formData.aboutText }} />
                         </>
                     }
                     {formData && formData.visionText &&
                         <>
                             <h2>VİZYONUMUZ</h2>
-                            <p>{formData.visionText}</p>
+                            <div dangerouslySetInnerHTML={{ __html: formData.visionText }} />
                         </>
                     }
                     {formData && formData.missionText &&
                         <>                            
                             <h2>MİSYONUMUZ</h2>
-                            <p>{formData.missionText}</p>
+                            <div dangerouslySetInnerHTML={{ __html: formData.missionText }} />
                         </>
                     }
                     {bookletFormData && bookletFormData.coverImageUrl && bookletFormData.fileUrl && (

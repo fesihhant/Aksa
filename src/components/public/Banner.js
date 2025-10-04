@@ -129,7 +129,7 @@ const Banner = ({ storedUser, setStoredUser }) => {
 
                 // Admin ise yönetim paneline, değilse ana sayfaya yönlendir
                 if (data.user.role === 'admin') {
-                    navigate('/users');
+                    navigate('/projects');
                 } else {
                     navigate('/');
                 }
@@ -233,7 +233,7 @@ const Banner = ({ storedUser, setStoredUser }) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData.email)
+                body: JSON.stringify(formData)
             });
 
             const data = await response.json();
@@ -306,7 +306,7 @@ const Banner = ({ storedUser, setStoredUser }) => {
                                     </div>
                                 ) : !isRegisterPage &&  !isloginPage && (
                                     <div className="auth-buttons">
-                                        <i onClick={() => changeModalStyle('login',true)} className="fa fa-sign-in login-link" aria-hidden="true"></i>
+                                        {/* <i onClick={() => changeModalStyle('login',true)} className="fa fa-sign-in login-link" aria-hidden="true"></i> */}
                                     </div>
                                 )}
                             </div>
@@ -323,7 +323,7 @@ const Banner = ({ storedUser, setStoredUser }) => {
                         </div>
                     ) : !isRegisterPage &&  !isloginPage && (
                         <div className="auth-buttons">
-                            <i onClick={() => changeModalStyle('login',true)} className="fa fa-sign-in login-link" aria-hidden="true"></i>
+                            {/* <i onClick={() => changeModalStyle('login',true)} className="fa fa-sign-in login-link" aria-hidden="true"></i> */}
                         </div>
                     )}
                 </div>
@@ -538,7 +538,7 @@ const Banner = ({ storedUser, setStoredUser }) => {
                              <div class="form-field">
                                  <div class="form-field-wrapper">
                                      <label for="email">E-posta</label>
-                                     <input type="email" name="email" required  disabled={loading}/>
+                                     <input type="email" name="email" onChange={(e) => setFormData({ ...formData, email: e.target.value })} disabled={loading} required/>
                                  </div>
                              </div>
                              <div class="form-field">

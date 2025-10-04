@@ -12,7 +12,7 @@ const CListContainer = ({pageName, error, searchTerm, handleSearch, url, filtere
     return (
         <div className="home-container">
             <div className="main-content">
-                <Breadcrumbs breadcrumbs={[{path:getPageTitleText(pageName), link:''}]} />
+                <Breadcrumbs />
                 <div className="data-grid-container">
                     <CListPageHeader pageName={pageName} error={error} searchTerm={searchTerm} handleSearch={handleSearch} url={url} />
                     <CDataGrid filteredData={filteredData} columns={columns} loading={loading} pageSize={pageSize} />

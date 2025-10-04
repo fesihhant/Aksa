@@ -146,7 +146,7 @@ export const categoryTypeEnum = {
     DISTANCE:4
 };
 
-export const serverUrl = 'http://localhost:5001';
+export const serverUrl = 'http://localhost:5000';
 export const apiUrl = serverUrl + '/api';
 export const apiUrlPath= (apiName) =>{
     return (apiUrl + '/' + apiName );
@@ -259,5 +259,16 @@ export function getCurrencyTypeOptions() {
         { value: 'GBP', label: 'İngiliz Sterlini (£)' },
         { value: 'JPY', label: 'Japon Yeni (¥)' }
     ];
+}
+
+export function getYoutubeEmbedUrl(url) {
+    if (!url) return '';
+    // youtube.com/watch?v=... veya youtu.be/... formatını embed'e çevir
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#\&\?]*).*/;
+    const match = url.match(regExp);
+    if (match && match[2].length === 11) {
+        return `https://www.youtube.com/embed/${match[2]}?autoplay=1&mute=1`;
+    }
+    return url; // Diğer video kaynakları için orijinal url
 }
    

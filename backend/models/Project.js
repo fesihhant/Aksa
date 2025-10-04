@@ -36,6 +36,14 @@ const projectSchema = new mongoose.Schema({
         default: 'TRY',
         required: [true, 'Para birimi zorunludur']
     },
+    imageUrls: [{
+        type: String,
+        default: null
+    }],   
+    videoUrl: {
+        type: String,
+        default: null
+    },
     startDate: {
         type: Date,
         required: [true, 'Başlangıç tarihi zorunludur'],

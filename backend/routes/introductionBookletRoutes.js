@@ -29,8 +29,6 @@ const upload = multer({
         fileSize: 5 * 1024 * 1024 // 5MB limit
     },
     fileFilter: function (req, file, cb) {
-        console.log('file:', file);
-        console.log('file fieldname:', file.fieldname);
 
         if (file.fieldname === 'image') {
             if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
@@ -69,10 +67,6 @@ router.post('/', protect, authorize('admin'),
     async (req, res) => {
     try {
         const { description } = req.body;
-        console.log('POST /api/introductionBooklet endpoint çağrıldı', req.body);
-        console.log('Yüklenen resim:', req.files.image[0]);
-        console.log('Yüklenen pdf:', req.files.bookletFile[0]);
-
 
         const modelData = new Model({
             description : description,
@@ -86,7 +80,6 @@ router.post('/', protect, authorize('admin'),
         if (req.files && req.files.bookletFile && req.files.bookletFile.length > 0) {
             modelData.fileUrl = '/' + uploadDir + req.files.bookletFile[0].filename;
         }
-        console.log('Model datası:', modelData);
 
         const introductionBooklet = new Model(modelData);
         await introductionBooklet.save();
@@ -126,10 +119,7 @@ router.put('/:id', protect, authorize('admin'),
     try {        
         const { description } = req.body;
 
-        console.log('PUT /api/introductionBooklet/:id endpoint çağrıldı' ,req.body);
-
         const introductionBooklet = await Model.findById(req.params.id);
-        console.log('Güncellenecek data:', introductionBooklet);
 
         if (!introductionBooklet) {
             return res.status(404).json({ success: false, message: 'Kayıt bulunamadı' });
@@ -173,7 +163,6 @@ router.put('/:id', protect, authorize('admin'),
                 }
             }
         }
-        console.log('Güncellenmiş data:', introductionBooklet);
         const updateData = await Model.findByIdAndUpdate(
             req.params.id, 
             introductionBooklet, 
@@ -228,11 +217,8 @@ router.delete('/:id', protect, authorize('admin'), async (req, res) => {
             introductionBooklet.imageUrls.forEach(file => {
                 if (file && typeof file === 'string') {
                     const imagePath = path.join(__dirname, '..', file);
-                    console.log('Eski resim yolu:', imagePath);
                     if (fs.existsSync(imagePath)) {
-                        console.log('Eski resim var:', imagePath);
                         fs.unlinkSync(imagePath);
-                        console.log('Eski resim silindi:', imagePath);
                     }
                 }
             });

@@ -275,11 +275,8 @@ router.get('/anonymous-token', async(req, res) => {
 //#region forget password
 router.post('/forget-password', async (req, res) => {
     const { email } = req.body;
-    console.log('aut forget-password api çağrıldı ');
-    console.log('body', email)
     try {
         const user = await User.findOne({ email });
-        console.log('user ', user);
         if (!user) {
             return res.status(401).json({
                 success: false,
@@ -288,14 +285,10 @@ router.post('/forget-password', async (req, res) => {
         }
 
         const expireDate = new Date();
-        expireDate.setHours(expireDate.getHours() + 1);
-        console.log('expireDate ', expireDate);
-        console.log('user id', user._id);
+        expireDate.setHours(expireDate.getHours() + 1); 
         
         //token şifrele
         const resetToken = EncryptedOrDecryptedJSFormat(user._id.toString(), true);
-        console.log('Şifrelenen EncryptedOrDecryptedJSFormat resetToken:', resetToken);
-        console.log('Link adresine verilen encodeURIComponent token :',encodeURIComponent(resetToken))
         const resetLink = `${process.env.LOCAL_WEB_ADDRESS}/reset-password/${encodeURIComponent(resetToken)}`;
 
         const userId = user._id;
@@ -315,11 +308,9 @@ router.post('/forget-password', async (req, res) => {
         }else{
 
             const userResetToken = new UserResetToken(tokenModel);
-             console.log('userResetToken model', userResetToken)
 
             await userResetToken.save();
             const userTokenResponse = { ...userResetToken.toObject() };
-             console.log('userTokenResponse  save model', userTokenResponse)
 
             if (!userTokenResponse) {
               return  res.status(500).json({success: false, message : 'Kullanıcı için token oluşturulamadı!'})
@@ -339,18 +330,14 @@ router.post('/forget-password', async (req, res) => {
         res.status(200).json({ success: true, message: 'Şifre sıfırlama mailiniz gönderilmiştir.' });
         
     } catch (error) {
-        console.error('Mail gönderme hatası:', error);
         res.status(500).json({ success: false, message: 'Mail gönderilemedi', error: error.message });
     }
 });
 
 router.get('/check-reset-token', async (req, res) => {
-    console.log('call check-reset-token api ');
     const { resetToken } = req.query;
-    console.log('reset token : ', resetToken);
     try {
         const decryptedToken = EncryptedOrDecryptedJSFormat(resetToken, false);
-        console.log('decryptedToken : ', decryptedToken);
 
         const tokenDoc = await UserResetToken.findOne({ decryptedToken });
         if (!tokenDoc) {
@@ -394,11 +381,8 @@ router.post('/reset-password', async (req, res) => {
 
 router.post('/send-activation', async (req, res) => {
     const { email } = req.body;
-    console.log('aut send-activation api çağrıldı ');
-    console.log('body', email)
     try {
         const userModel = await User.findOne({ email });
-        console.log('userModel ', userModel);
         if (!userModel) {
             return res.status(401).json({
                 success: false,
@@ -408,8 +392,6 @@ router.post('/send-activation', async (req, res) => {
 
        //token şifrele
         const resetToken = EncryptedOrDecryptedJSFormat(userModel._id.toString(), true);
-        console.log('Şifrelenen EncryptedOrDecryptedJSFormat resetToken:', resetToken);
-        console.log('Link adresine verilen encodeURIComponent token :',encodeURIComponent(resetToken))
         const resetLink = `${process.env.LOCAL_WEB_ADDRESS}/user-activated/${encodeURIComponent(resetToken)}`;
 
         const tokenModel = userModel;

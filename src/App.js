@@ -14,7 +14,7 @@ import EditCategory from './components/admin/EditCategory';
 import CategoryTypes from './components/admin/CategoryTypes';
 import EditCategoryType from './components/admin/EditCategoryType';
 
-import ProjectList from './components/admin/Projects';
+import AdminProject from './components/admin/Projects';
 import EditProject from './components/admin/EditProject';
  
 import References from './components/admin/References';
@@ -43,6 +43,7 @@ import Register from './components/public/Register';
 import About from './components/public/About';
 import Contact from './components/public/Contact';
 
+import ProjectList from './components/public/Projects';
 import ProjectDetail from './components/public/ProjectDetail';
 import OurActivities from './components/public/OurActivities';
 import ResetPassword from './components/public/ResetPassword';
@@ -104,7 +105,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
 
-            {/* <Route path="/projects" element={<Projects />} /> */}
+            <Route path="/project-list" element={<ProjectList />} />
             <Route path="/project-detail" element={<ProjectDetail />} />
             <Route path="/activities" element={<OurActivities />} />
             
@@ -129,7 +130,7 @@ function App() {
             <Route path="/categoryTypes/new" element={ <PrivateRoute requireAdmin ><EditCategoryType /></PrivateRoute>}/>
             <Route path="/categoryTypes/edit/:id" element={<PrivateRoute requireAdmin ><EditCategoryType /></PrivateRoute>}/>  
 
-            <Route path="/projects" element={<PrivateRoute requireAdmin><ProjectList /></PrivateRoute>}/>           
+            <Route path="/projects" element={<PrivateRoute requireAdmin><AdminProject /></PrivateRoute>}/>           
             <Route path="/projects/new" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/>                             
             <Route path="/projects/edit/:id" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/>   
             <Route path="/projectdetail" element={<PrivateRoute requireAdmin><EditProject /></PrivateRoute>}/> 

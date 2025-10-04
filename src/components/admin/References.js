@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CListContainer from '../htmlComponent/CListContainer';
+import { useDeleteApiCall } from '../../utils/apiCalls';
 import '../../css/Products.css';
 import { apiUrl } from '../../utils/utils';
+import ModalMessage from '../public/ModalMessage';
 
 const References = () => {
     const navigate = useNavigate();
-    const [references, setReferences] = useState([]);
+    const [references, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
 
+    const { apiSuccess, apiError: deleteError, apiLoading: deleteLoading, deleteData } = useDeleteApiCall();
+    
     useEffect(() => {
         const fetchReferences = async () => {
             try {
@@ -28,7 +32,7 @@ const References = () => {
                 const data = await response.json();
 
                 if (data.success) {
-                    setReferences(data.references);
+                    setData(data.references);
                 } else {
                     setError('Referanslar yüklenirken bir hata oluştu');
                 }
@@ -42,6 +46,38 @@ const References = () => {
 
         fetchReferences();
     }, []);
+
+    //#region "state management for delete operation"
+    // ...existing state...
+    const [modalOpen, setModalOpen] = useState(false);
+    const [deleteId, setDeleteId] = useState(null);
+
+    const handleDelete = async (itemId) => {
+        const success = await deleteData(`/references/${itemId}`);
+        if (success) {
+            setData(references.filter(p => p._id !== itemId));
+            
+        } else if (deleteError) {
+            setError(deleteError);
+        }
+        setLoading(deleteLoading);
+    };
+
+    // Modal onaylandığında silme işlemi
+    const handleModalConfirm = async () => {
+        setModalOpen(false);
+        if (deleteId) {
+            await handleDelete(deleteId);
+            setDeleteId(null);
+        }
+    };
+
+    // Modal iptal edildiğinde
+    const handleModalCancel = () => {
+        setModalOpen(false);
+        setDeleteId(null);
+    };
+    //#endregion
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
@@ -86,30 +122,37 @@ const References = () => {
         {
             field: 'actions',
             headerName: 'İşlemler',
-            width: 120,
+            width: 150,
             renderCell: (params) => (
-                <button
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        // navigate(`/reference/edit/${params.row._id}`);
-                        navigate('/referencedetail', { state: {referenceData: params.row }});
-                    }}
-                    style={{
-                        backgroundColor: '#4CAF50',
-                        color: 'white',
-                        border: 'none',
-                        padding: '5px 10px',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Düzenle
-                </button>
+            
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            // navigate(`/reference/edit/${params.row._id}`);
+                            navigate('/referencedetail', { state: {referenceData: params.row }});
+                        }}
+                        className='submit-button'
+                    >
+                        Düzenle
+                    </button>
+                    <button
+                        onClick={async (e) => {
+                            e.stopPropagation();
+                            setDeleteId(params.row._id);
+                            setModalOpen(true);
+                        }}
+                        className='cancel-button'
+                    >
+                        Sil
+                    </button>
+                </div>
             )
         }
     ];
 
     return (
+        <>
         <CListContainer pageName={'references'} 
             error={error} 
             searchTerm={searchTerm} 
@@ -119,7 +162,16 @@ const References = () => {
             columns={columns} 
             loading={loading} 
             pageSize={10}
+        /> 
+        
+        <ModalMessage
+            open={modalOpen}
+            type="warning"
+            message="Bu kaydı silmek istediğinize emin misiniz?"
+            onConfirm={handleModalConfirm}
+            onCancel={handleModalCancel}
         />  
+        </>
     );
 };
 

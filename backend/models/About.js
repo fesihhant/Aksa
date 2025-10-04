@@ -13,6 +13,22 @@ const aboutSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Lütfen misyon kısmını giriniz']
     },
+    phoneNumber:{
+        type: String,
+        required: [true, 'Lütfen telefon numarasını giriniz']
+    },
+    email:{
+        type: String,
+        required: [true, 'Lütfen email adresini giriniz']
+    },
+    address:{
+        type: String,
+        required: [true, 'Lütfen adresi giriniz']
+    },
+    fax:{
+        type: String,
+        required: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

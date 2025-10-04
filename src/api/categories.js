@@ -12,7 +12,6 @@ export const fetchCategories = async () => {
         const data = await response.json();
 
         if (data.success) {
-            console.log('categories ',data);
             return data.events;
         }
     } catch (error) {    

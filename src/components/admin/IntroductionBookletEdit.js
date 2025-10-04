@@ -26,7 +26,7 @@ const IntroductionBookletEdit = () => {
     {
         description: '',
         coverImageUrl: '',
-        fileUrl: '',
+        fileUrl: ''
     });
 
     const { apiData, apiError, apiLoading } = useApiCall('/introductionBooklet', 'GET', null, true);

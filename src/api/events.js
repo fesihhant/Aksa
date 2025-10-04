@@ -12,7 +12,6 @@ export const fetchEvents = async () => {
         const data = await response.json();
 
         if (data.success) {
-            console.log('Events ',data);
             return data.events;
         }
     } catch (error) {    

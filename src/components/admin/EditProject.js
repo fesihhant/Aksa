@@ -6,17 +6,16 @@ import { tr } from 'date-fns/locale/tr';
 import 'react-datepicker/dist/react-datepicker.css'; // CSS dosyasını ekliyoruz
 
 import Breadcrumbs from '../public/Breadcrumbs';
-import CCrousel from '../htmlComponent/CCarousel';
+import CCrousel from '../htmlComponent/CCrousel';
 
 import '../../css/NewProduct.css';
 import { Checkbox } from '@mui/material';
 import { formatPrice, categoryTypeEnum, serverUrl , apiUrl,getCurrencySymbol, getCurrencyTypeOptions,
-    editorModules, editorFormats
+    editorModules, editorFormats,getYoutubeEmbedUrl
  } from '../../utils/utils';
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
-import { set } from 'mongoose';
 
 const EditProject = () => {
     const navigate = useNavigate();
@@ -59,7 +58,6 @@ const EditProject = () => {
         if (id) {
             fetchData();
         } else {
-            console.log('No project data, resetting form'); // Debug için
             setFormData({
                 name: '',
                 statusType: '',
@@ -86,8 +84,6 @@ const EditProject = () => {
             
             const data = await response.json();
             if (data.success) {
-                console.log('Kategoriler:', data.categories); // Debug için
-
                 setCategories(data.categories); // Kategorileri state'e kaydet
             } else {
                 console.error('Kategori verileri alınamadı:', data.message);
@@ -194,18 +190,17 @@ const EditProject = () => {
                 }else {
                     images.forEach(image => formDataToSend.append('images', image)); // Resim dosyaları
                 } 
-            }
-            
+            } 
             formDataToSend.append('typeofActivityId', formData.typeofActivityId._id || formData.typeofActivityId);
             formDataToSend.append('name', formData.name);
             formDataToSend.append('description', formData.description);
             formDataToSend.append('statusType', isActive ? 'true' : 'false'); // Checkbox durumu
-            formDataToSend.append('projectCost', formData.projectCost);
+            formDataToSend.append('projectCost', Number(formData.projectCost) || 0); // Proje maliyeti
             formDataToSend.append('isVisibleCost', isVisibleCost ? 'true' : 'false'); // Checkbox durumu
             formDataToSend.append('currencyType', formData.currencyType || 'TRY'); // Varsayılan olarak TRY
             formDataToSend.append('startDate', startDate ? startDate.toISOString() : '');
             formDataToSend.append('endDate', endDate ? endDate.toISOString() : null);
-           
+            formDataToSend.append('videoUrl', formData.videoUrl || '');
             
             const url = formData?._id
                 ? `${apiUrl}/projects/${formData._id}` // Güncelleme için PUT
@@ -248,7 +243,7 @@ const EditProject = () => {
                                 className="submit-button"
                                 disabled={loading}
                             >
-                                {loading ? 'Kaydediliyor...' : (formData ? 'Güncelle' : 'Kaydet')}
+                                {loading ? 'Kaydediliyor...' : (formData?._id ? 'Güncelle' : 'Kaydet')}
                             </button>
                             <button 
                                 type="button" 
@@ -418,7 +413,7 @@ const EditProject = () => {
                                         type="file"
                                         id="images"                                        
                                         multiple // Eğer birden fazla resim yüklemek istiyorsanız burayı açabilirsiniz.
-                                        
+                                        name='images'
                                         onChange={handleImageChange}
                                         accept="image/*"
                                         style={{ display: 'none' }}
@@ -430,6 +425,37 @@ const EditProject = () => {
                                 <CCrousel  imageList={imagePreviews} />
                             )}
                             </div>
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <small style={{ color: 'gray' }}>Maksimum resim boyutu: 5MB</small><br></br>
+                        <small style={{ color: 'gray' }}>Yüklenen resimler otomatik olarak  yenilenecektir.</small>
+                    </div>
+                    
+                    <div className="form-group">
+                        <label htmlFor="videoUrl">Youtube Video URL (Opsiyonel)</label>
+                        <div className="avatar-options">
+                        <input
+                            type="text"
+                            id="videoUrl"
+                            name="videoUrl"
+                            value={formData.videoUrl}
+                            onChange={handleInputChange}
+                        />
+                        <br></br>
+                        {formData.videoUrl && formData.videoUrl.trim() !== '' && (
+                        <div className="video-container">
+                            <iframe
+                                width="100%"
+                                height="400"
+                                src={getYoutubeEmbedUrl(formData.videoUrl)}
+                                title="Project Video"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            ></iframe>
+                            </div>
+                            )}
                         </div>
                     </div>
                 </form>

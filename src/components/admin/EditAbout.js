@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import Breadcrumbs from '../public/Breadcrumbs';
 import '../../css/EditUser.css';
 import { useApiCall } from '../../utils/apiCalls';
-import {apiUrl} from '../../utils/utils';
+import {apiUrl, editorModules, editorFormats} from '../../utils/utils';
 
 
 const EditAbout = () => {
@@ -59,7 +61,10 @@ const EditAbout = () => {
                     aboutText: formData.aboutText,
                     visionText: formData.visionText,
                     missionText: formData.missionText,
-
+                    phoneNumber: formData.phoneNumber,
+                    email: formData.email,
+                    address: formData.address,
+                    fax: formData.fax
                 })
             });
 
@@ -90,10 +95,9 @@ const EditAbout = () => {
     return (
         <div className="home-container">
             <div className="main-content">
-                <Breadcrumbs breadcrumbs={[{path:'Biz Kimiz', link:''}]} />
+                <Breadcrumbs />
                 <form id="formPage" onSubmit={handleSubmit} className="edit-user-form">
                     <div className="page-header">
-                        {/* <h1 className='headerClass'>Biz Kimiz</h1> */}
                         <div className="form-actions">
                             <button 
                                 type="submit"
@@ -117,34 +121,95 @@ const EditAbout = () => {
                     {error && <div className="error-message">{error}</div>}
                 
                     <div className="form-group">
-                        <label htmlFor="aboutText">Hakkımızda</label>
-                        <textarea
-                            id="aboutText"
-                            name="aboutText"
+                        <label htmlFor="aboutText">Hakkımızda</label> 
+                        <ReactQuill
+                            name={'aboutText'}
+                            theme="snow"
                             required
+                            className='react-quill-custom'
+                            modules={editorModules()}
+                            formats={editorFormats()}
                             value={formData.aboutText} 
-                            onChange={(e) => setFormData({ ...formData, aboutText: e.target.value })}
-                        />
+                            onChange={(e) => setFormData({ ...formData, aboutText: e })}  
+                        /> 
                     </div>
                     <div className="form-group">
-                        <label htmlFor="visionText">Vizyonumuz</label>
-                        <textarea
-                            id="visionText"
-                            name="visionText"
+                        <label htmlFor="visionText">Vizyonumuz</label>                        
+                        <ReactQuill
+                            name={'visionText'}
+                            theme="snow"
                             required
+                            className='react-quill-custom'
+                            modules={editorModules()}
+                            formats={editorFormats()}
                             value={formData.visionText} 
-                            onChange={(e) => setFormData({ ...formData, visionText: e.target.value })}
-                        />
+                            onChange={(e) => setFormData({ ...formData, visionText: e })}  
+                        /> 
                     </div>
                     <div className="form-group">
                         <label htmlFor="missionText">Misyonumuz</label>
-                        <textarea
-                            id="missionText"
-                            name="missionText"
+                        <ReactQuill
+                            name={'missionText'}
+                            theme="snow"
                             required
+                            className='react-quill-custom'
+                            modules={editorModules()}
+                            formats={editorFormats()}
                             value={formData.missionText} 
-                            onChange={(e) => setFormData({ ...formData, missionText: e.target.value })}
+                            onChange={(e) => setFormData({ ...formData, missionText: e})}  
+                        /> 
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="phoneNumber">Telefon Numarası</label>
+                        <input
+                            type="text"
+                            id="phoneNumber"
+                            name="phoneNumber"
+                            required
+                            value={formData.phoneNumber || ''} 
+                            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                         />
+                    </div>                    
+                    <div className="form-group">
+                        <label htmlFor="fax">Fax</label>
+                        <input
+                            type="text"
+                            id="fax"
+                            name="fax"
+                            value={formData.fax || ''} 
+                            onChange={(e) => setFormData({ ...formData, fax: e.target.value })}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="email">Email Adresi</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            required
+                            value={formData.email || ''} 
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                        />  
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="address">Adres</label>
+                        {/* <textarea
+                            id="address"
+                            name="address"
+                            required
+                            value={formData.address} 
+                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                        /> */}
+                        <ReactQuill
+                            name={'address'}
+                            theme="snow"
+                            required
+                            className='react-quill-custom'
+                            modules={editorModules()}
+                            formats={editorFormats()}
+                            value={formData.address} 
+                            onChange={(e) => setFormData({ ...formData, address: e })}  
+                        /> 
                     </div>
                 </form>
             </div>
