@@ -93,6 +93,7 @@ const EditCategory = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    id: id? id : undefined,
                     name: formData.name,
                     categoryTypeId: Number(formData.categoryTypeId)
                 })

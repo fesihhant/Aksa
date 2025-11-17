@@ -39,8 +39,14 @@ const projectSchema = new mongoose.Schema({
     imageUrls: [{
         type: String,
         default: null
-    }],   
-    videoUrl: {
+    }],
+    videoUrls:[
+        {
+            type:String,
+            default:null
+        }
+    ],
+    youtubeUrl: {
         type: String,
         default: null
     },

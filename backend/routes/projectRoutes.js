@@ -84,21 +84,29 @@ router.get('/:id', protect, async (req, res) => {
 });
 
 // Yeni Kayıt oluştur - Sadece admin
-router.post('/', protect, authorize('admin'), upload.array('images'), async (req, res) => {
+router.post('/', protect, authorize('admin'), 
+    upload.fields([{ name: 'images' }, { name: 'videos' }]), async (req, res) => {
     try {
-        const { name, statusType, description, projectCost, isVisibleCost, typeofActivityId, videoUrl, currencyType , startDate,endDate } = req.body;
+        const { name, statusType, description, projectCost, isVisibleCost, typeofActivityId, youtubeUrl, currencyType , startDate,endDate } = req.body;
         if (!name || !projectCost || !startDate) {
             return res.status(400).json({
                 success: false,
                 message: 'Lütfen tüm zorunlu alanları doldurun'
             });
         }
-        if (!req.files || req.files.length === 0) {
+        if (!req.files || req.files.images.length === 0) {
             return res.status(400).json({
                 success: false,
                 message: 'Lütfen en az bir resim yükleyin'
             });
         }
+        
+        const imageUrls = req.files && req.files.images
+            ? req.files.images.map(file => '/uploads/projects/' + file.filename)
+            : [];
+        const videoUrls = req.files && req.files.videos
+            ? req.files.videos.map(file => '/uploads/projects/' + file.filename)
+            : [];
         const project = new Project({
             name,
             statusType,
@@ -108,9 +116,10 @@ router.post('/', protect, authorize('admin'), upload.array('images'), async (req
             currencyType: currencyType || 'TRY',
             startDate: startDate ? new Date(startDate) : new Date(),
             endDate: endDate ? new Date(endDate) : new Date(),
-            imageUrls: req.files ? req.files.map(file => '/uploads/projects/' + file.filename) : [],
+            imageUrls,
+            videoUrls,
             typeofActivityId: typeofActivityId,
-            videoUrl : videoUrl || ''
+            youtubeUrl : youtubeUrl || ''
         });
  
         await project.save();
@@ -121,7 +130,13 @@ router.post('/', protect, authorize('admin'), upload.array('images'), async (req
         });
     } catch (error) {
         if (req.files) {
-            req.files.forEach(file => {
+            // req.files.forEach(file => {
+            //     const filePath = path.join(__dirname, '..', file.path);
+            //     if (fs.existsSync(filePath)) {
+            //         fs.unlinkSync(filePath);
+            //     }
+            // });
+            Object.values(req.files).flat().forEach(file => {
                 const filePath = path.join(__dirname, '..', file.path);
                 if (fs.existsSync(filePath)) {
                     fs.unlinkSync(filePath);
@@ -136,10 +151,11 @@ router.post('/', protect, authorize('admin'), upload.array('images'), async (req
 });
 
 // Kaydı güncelle - Sadece admin
-router.put('/:id', protect, authorize('admin'),upload.array('images'), async (req, res) => {
+router.put('/:id', protect, authorize('admin'),
+    upload.fields([{ name: 'images' }, { name: 'videos' }]), async (req, res) => {
     
     try {        
-        const { name, statusType, description, projectCost, isVisibleCost, typeofActivityId, videoUrl, currencyType, startDate,endDate } = req.body;
+        const { name, statusType, description, projectCost, isVisibleCost, typeofActivityId, youtubeUrl, currencyType, startDate,endDate } = req.body;
 
         const project = await Project.findById(req.params.id);
 
@@ -160,18 +176,35 @@ router.put('/:id', protect, authorize('admin'),upload.array('images'), async (re
         project.isVisibleCost = isVisibleCost;
         project.currencyType = currencyType || 'TRY'; // Varsayılan olarak TRY
         project.typeofActivityId = typeofActivityId ||project.typeofActivityId; // Eğer typeofActivityId yoksa null olarak ayarla
-        project.videoUrl = videoUrl || '';
+        project.youtubeUrl = youtubeUrl || '';
         project.startDate = startDate ? new Date(startDate) : project.startDate; // Tarih formatını kontrol et
         project.endDate = endDate ? new Date(endDate) : null; // Tarih formatını kontrol et
        
         const oldImageUrls = project.imageUrls || [];
         
-        // Yeni resim yüklenmişse, eski resimleri sil ve yeni resimleri ekle
-        if (req.files && req.files.length > 0) {
-            const imagePaths = req.files.map(file => '/uploads/projects/' + file.filename);
-            if (imagePaths.length > 0) {
-                project.imageUrls = imagePaths;
-            }
+        // // Yeni resim yüklenmişse, eski resimleri sil ve yeni resimleri ekle
+        // if (req.files && req.files.length > 0) {
+        //     const imagePaths = req.files.map(file => '/uploads/projects/' + file.filename);
+        //     if (imagePaths.length > 0) {
+        //         project.imageUrls = imagePaths;
+        //     }
+        //     // Eski resimleri silme işlemini yanıt gönderilmeden önce yapın
+        //     if (oldImageUrls.length > 0) {
+        //         oldImageUrls.forEach(file => {
+        //             if (file && typeof file === 'string') {
+        //                 const oldImagePath = path.join(__dirname, '..', file);
+        //                 if (fs.existsSync(oldImagePath)) {
+        //                     if (project.imageUrls.includes(oldImagePath)) {
+        //                     }else {
+        //                         fs.unlinkSync(oldImagePath);
+        //                     }
+        //                 }
+        //             }
+        //         });
+        //     }
+        // }
+        // Yeni yüklenen resim/video varsa mevcut listeye ekle
+        if (req.files && req.files.images) {
             // Eski resimleri silme işlemini yanıt gönderilmeden önce yapın
             if (oldImageUrls.length > 0) {
                 oldImageUrls.forEach(file => {
@@ -186,8 +219,33 @@ router.put('/:id', protect, authorize('admin'),upload.array('images'), async (re
                     }
                 });
             }
+
+            const newImages = req.files.images.map(file => '/uploads/projects/' + file.filename);
+            project.imageUrls = [...(project.imageUrls || []), ...newImages];
+
+            
         }
-        
+        if (req.files && req.files.videos) {
+            const oldVideoUrls = project.videoUrls || [];            
+            // Eski videoları silme işlemini yanıt gönderilmeden önce yapın
+            if (oldVideoUrls.length > 0) {
+                oldVideoUrls.forEach(file => {  
+                    if (file && typeof file === 'string') {
+                        const oldVideoPath = path.join(__dirname, '..', file);
+                        if (fs.existsSync(oldVideoPath)) {
+                            if (project.videoUrls.includes(oldVideoPath)) {
+                            }else {
+                                fs.unlinkSync(oldVideoPath);
+                            }
+                        }
+                    }
+                });
+            }
+
+            const newVideos = req.files.videos.map(file => '/uploads/projects/' + file.filename);
+            project.videoUrls = [...(project.videoUrls || []), ...newVideos];
+
+        }
         
         const updatedProject = await Project.findByIdAndUpdate(
             req.params.id, 
@@ -207,18 +265,16 @@ router.put('/:id', protect, authorize('admin'),upload.array('images'), async (re
         });
          
     } catch (error) {
+        // yüklenen dosyaları temizle
         if (req.files) {
-            req.files.forEach(file => {
+            Object.values(req.files).flat().forEach(file => {
                 const filePath = path.join(__dirname, '..', file.path);
                 if (fs.existsSync(filePath)) {
                     fs.unlinkSync(filePath);
                 }
             });
         }
-        res.status(500).json({ 
-            success: false, 
-            message: error.message 
-        });
+        res.status(500).json({success: false, message: error.message });
     } 
 });
 

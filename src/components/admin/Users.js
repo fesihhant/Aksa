@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import CListContainer from '../htmlComponent/CListContainer';
 import ModalMessage from '../public/ModalMessage';
 import { useApiCall, useDeleteApiCall } from '../../utils/apiCalls';
+import { serverUrl } from '../../utils/utils';
 
 const Users = () => {
     const navigate = useNavigate();
@@ -81,12 +82,12 @@ const Users = () => {
             renderCell: (params) => (
                 <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     <img
-                        src={params.row.avatar ? `http://localhost:5001${params.row.avatar}` : `http://localhost:5001/uploads/avatars/default.jpg`}
+                        src={params.row.avatar ? `${serverUrl}${params.row.avatar}` : `${serverUrl}/uploads/avatars/default.jpg`}
                         alt={params.row.fullName}
                         style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}
                         onError={(e) => {
                             console.error('Avatar yükleme hatası:', e);
-                            e.target.src = `http://localhost:5001/uploads/avatars/default.jpg`;
+                            e.target.src = `${serverUrl}/uploads/avatars/default.jpg`;
                         }}
                     />
                 </div>

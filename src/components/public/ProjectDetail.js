@@ -21,7 +21,7 @@ const ProjectDetail = () => {
             price: '',
             stockQuantity: '',
             typeofActivityId: null,
-            videoUrl : '',
+            youtubeUrl : '',
 
         });
         const [imagePreviews, setImagePreviews] = useState([]);
@@ -40,7 +40,7 @@ const ProjectDetail = () => {
                 startDate: projectData.startDate ? projectData.startDate.toString() : '',
                 endDate: projectData.endDate ? projectData.endDate.toString() : '',
                 imageUrls: projectData.imageUrls || '',
-                videoUrl : projectData.videoUrl || ''
+                youtubeUrl : projectData.youtubeUrl || ''
             });
 
             if (projectData.imageUrls && projectData.imageUrls.length > 0) {
@@ -56,7 +56,7 @@ const ProjectDetail = () => {
                 startDate: '',
                 endDate: '',
                 imageUrls: [],
-                videoUrl : ''
+                youtubeUrl : ''
             });
             setImagePreviews([]);
         }
@@ -156,12 +156,12 @@ const ProjectDetail = () => {
                                 <div className="col-12">
                                     <div className="form-group"> 
                                         <div className="avatar-options">
-                                            {formData.videoUrl && formData.videoUrl.trim() !== '' && (
+                                            {formData.youtubeUrl && formData.youtubeUrl.trim() !== '' && (
                                                 <div className="video-container">
                                                     <iframe
                                                         width="100%"
                                                         height="800"
-                                                        src={getYoutubeEmbedUrl(formData.videoUrl)}
+                                                        src={getYoutubeEmbedUrl(formData.youtubeUrl)}
                                                         title="Project Video" 
                                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                         allowFullScreen

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import CListContainer from '../htmlComponent/CListContainer';
 import { useDeleteApiCall } from '../../utils/apiCalls';
 import '../../css/Products.css';
-import { apiUrl } from '../../utils/utils';
+import { apiUrl, serverUrl } from '../../utils/utils';
 import ModalMessage from '../public/ModalMessage';
 
 const References = () => {
@@ -97,7 +97,7 @@ const References = () => {
                 <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     {params.value ? (
                         <img
-                            src={`http://localhost:5001${params.value}`}
+                            src={`${serverUrl}${params.value}`}
                             alt={params.row.name}
                             style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
                         />

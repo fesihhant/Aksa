@@ -7,6 +7,7 @@ import 'react-datepicker/dist/react-datepicker.css'; // CSS dosyasını ekliyoru
 
 import Breadcrumbs from '../public/Breadcrumbs';
 import CCrousel from '../htmlComponent/CCrousel';
+import VideoPlayer from '../htmlComponent/VideoPlayer';
 
 import '../../css/NewProduct.css';
 import { Checkbox } from '@mui/material';
@@ -16,6 +17,7 @@ import { formatPrice, categoryTypeEnum, serverUrl , apiUrl,getCurrencySymbol, ge
 
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; 
+import { set } from 'mongoose';
 
 const EditProject = () => {
     const navigate = useNavigate();
@@ -28,6 +30,8 @@ const EditProject = () => {
     const [isVisibleCost, setIsVisibleCost] = useState(false); // Status checkbox için state
     const [images, setImages] = useState([]);
     const [imagePreviews, setImagePreviews] = useState([]);
+    const [videoFiles, setVideoFiles] = useState([]);
+    const [videoPreviews, setVideoPreviews] = useState([]);
 
     const [categories, setCategories] = useState([]); // Faaliyet türleri için state
     const [formData, setFormData] = useState({
@@ -39,7 +43,8 @@ const EditProject = () => {
         isVisibleCost: false,
         startDate: '',
         endDate: '',
-        imageUrls: []
+        imageUrls: [],
+        videoUrls: []
     });
     
 
@@ -66,7 +71,8 @@ const EditProject = () => {
                 typeofActivityId: '',
                 startDate: '',
                 endDate: '',
-                imageUrls: []
+                imageUrls: [],
+                videoUrls: []
             });
             setImages([]);
             setImagePreviews([]);
@@ -117,6 +123,12 @@ const EditProject = () => {
                     setImages([]);
                     setImagePreviews([]);
                 }
+                if (data.project.videoUrls && data.project.videoUrls.length > 0) {
+                    setVideoFiles(data.project.videoUrls.map(url => ({ name: url.split('/').pop(), url: `${serverUrl}${url}` }))); // Video dosyalarını ayarlıyoruz
+                    setVideoPreviews(data.project.videoUrls.map(url => ({ name: url.split('/').pop(), url: `${serverUrl}${url}` }))); // Video önizlemelerini ayarlıyoruz
+                } else {
+                    setVideoPreviews([]);
+                }
             } else {
                 setError(data.message || 'Proje bilgileri yüklenemedi');
             }
@@ -166,6 +178,27 @@ const EditProject = () => {
         setError('');
     };
 
+    const handleVideoChange = (e) => {
+        const files = Array.from(e.target.files);
+        const validFiles = files.filter(file => {
+            // ör: maksimum 100MB toplam veya tekil limit isteğe göre değiştirilebilir
+            if (file.size > 100 * 1024 * 1024) {
+                setError('Video boyutu 100MB\'dan küçük olmalıdır');
+                return false;
+            }
+            if (!file.type.startsWith('video/')) {
+                setError('Lütfen geçerli bir video dosyası seçin');
+                return false;
+            }
+            return true;
+        });
+
+        setVideoFiles(validFiles);
+        // video preview için blob url veya isim gösterebilirsin
+        setVideoPreviews(validFiles.map(f => ({ name: f.name, url: URL.createObjectURL(f) })));
+        setError('');
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -177,7 +210,10 @@ const EditProject = () => {
                 navigate('/login');
                 return;
             }
-             
+             if (videoFiles.length > 0) {
+                // toplam boyut kontrol istersen buraya ekle
+                videoFiles.forEach(video => formDataToSend.append('videos', video)); // video dosyaları
+            }
             const formDataToSend = new FormData();
             if (formData?._id) {
                 formDataToSend.append('id', formData._id); // Güncelleme için ID
@@ -200,7 +236,7 @@ const EditProject = () => {
             formDataToSend.append('currencyType', formData.currencyType || 'TRY'); // Varsayılan olarak TRY
             formDataToSend.append('startDate', startDate ? startDate.toISOString() : '');
             formDataToSend.append('endDate', endDate ? endDate.toISOString() : null);
-            formDataToSend.append('videoUrl', formData.videoUrl || '');
+            formDataToSend.append('youtubeUrl', formData.youtubeUrl || '');
             
             const url = formData?._id
                 ? `${apiUrl}/projects/${formData._id}` // Güncelleme için PUT
@@ -431,24 +467,65 @@ const EditProject = () => {
                         <small style={{ color: 'gray' }}>Maksimum resim boyutu: 5MB</small><br></br>
                         <small style={{ color: 'gray' }}>Yüklenen resimler otomatik olarak  yenilenecektir.</small>
                     </div>
-                    
                     <div className="form-group">
-                        <label htmlFor="videoUrl">Youtube Video URL (Opsiyonel)</label>
+                        <label htmlFor="videoUrls">Proje Videoları (Opsiyonel)</label>
+                        <div className="avatar-options">
+                            <div className="upload-section">
+                                <label className="upload-label" style={{ textAlign: 'center', width: '100%', color: 'white' }}>
+                                    Video Yükle
+                                    <input
+                                        type="file"
+                                        id="videos"
+                                        name="videos"
+                                        multiple
+                                        onChange={handleVideoChange}
+                                        accept="video/*"
+                                        style={{ display: 'none' }}
+                                    />
+                                </label>
+                            </div>
+
+                            {/* Yüklenen video dosyalarının preview'ı */}
+                            {videoPreviews && videoPreviews.length > 0 && (
+                                <div style={{ marginTop: 16 }}>
+                                    <h4>Yüklenen Videolar:</h4>
+                                    {videoPreviews.map((v, i) => (
+                                        <div key={i} style={{ marginBottom: 6 }}>
+                                            <span>✓ {v.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Veritabanından gelen videoların oynatılması */}
+                            {formData.videoUrls && formData.videoUrls.length > 0 && (
+                                <div style={{ marginTop: 16 }}>
+                                    <h4>Proje Videoları:</h4>
+                                    <VideoPlayer 
+                                        videoList={formData.videoUrls}
+                                        serverUrl={serverUrl}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="youtubeUrl">Youtube Video URL (Opsiyonel)</label>
                         <div className="avatar-options">
                         <input
                             type="text"
-                            id="videoUrl"
-                            name="videoUrl"
-                            value={formData.videoUrl}
+                            id="youtubeUrl"
+                            name="youtubeUrl"
+                            value={formData.youtubeUrl}
                             onChange={handleInputChange}
                         />
                         <br></br>
-                        {formData.videoUrl && formData.videoUrl.trim() !== '' && (
+                        {formData.youtubeUrl && formData.youtubeUrl.trim() !== '' && (
                         <div className="video-container">
                             <iframe
                                 width="100%"
                                 height="400"
-                                src={getYoutubeEmbedUrl(formData.videoUrl)}
+                                src={getYoutubeEmbedUrl(formData.youtubeUrl)}
                                 title="Project Video"
                                 frameBorder="0"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

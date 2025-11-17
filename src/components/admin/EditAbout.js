@@ -41,6 +41,11 @@ const EditAbout = () => {
         setLoading(true);
         setError('');
 
+        // if (typeof validate === "function" && !validate()) {
+        //     setLoading(false);
+        //     return;
+        // }
+        
         try {
             const token = localStorage.getItem('token');
             if (!token) {

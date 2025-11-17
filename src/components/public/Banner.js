@@ -306,7 +306,7 @@ const Banner = ({ storedUser, setStoredUser }) => {
                                     </div>
                                 ) : !isRegisterPage &&  !isloginPage && (
                                     <div className="auth-buttons">
-                                        {/* <i onClick={() => changeModalStyle('login',true)} className="fa fa-sign-in login-link" aria-hidden="true"></i> */}
+                                        <i onClick={() => changeModalStyle('login',true)} className="fa fa-sign-in login-link" aria-hidden="true"></i>
                                     </div>
                                 )}
                             </div>
@@ -323,7 +323,7 @@ const Banner = ({ storedUser, setStoredUser }) => {
                         </div>
                     ) : !isRegisterPage &&  !isloginPage && (
                         <div className="auth-buttons">
-                            {/* <i onClick={() => changeModalStyle('login',true)} className="fa fa-sign-in login-link" aria-hidden="true"></i> */}
+                            <i onClick={() => changeModalStyle('login',true)} className="fa fa-sign-in login-link" aria-hidden="true"></i>
                         </div>
                     )}
                 </div>
