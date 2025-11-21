@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import CListContainer from '../htmlComponent/CListContainer';
 import ModalMessage from '../public/ModalMessage';
 import { useApiCall, useDeleteApiCall } from '../../utils/apiCalls';
+import {createTextRender, createActionsRender,createDateRender} from '../../utils/columnUtil';
+
 
 const CategoryTypes = () => {
     const navigate = useNavigate();
@@ -12,7 +14,7 @@ const CategoryTypes = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     const { apiData, apiError, apiLoading } = useApiCall('/categoryTypes', 'GET', null, true);
-    const { apiSuccess, apiError: deleteError, apiLoading: deleteLoading, deleteData } = useDeleteApiCall();
+    const { apiError: deleteError, apiLoading: deleteLoading, deleteData } = useDeleteApiCall();
     
     useEffect(() => {
         if (apiData && apiData.categoryTypes) {
@@ -72,55 +74,34 @@ const CategoryTypes = () => {
             field: 'name',
             headerName: 'Kategori Türü',
             flex: 1,
-            minWidth: 150
+            minWidth: 150,
+            renderCell: createTextRender('name', 300)
         },
         {
             field: 'createdAt',
             headerName: 'Kayıt Tarihi',
             width: 150,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString('tr-TR')
+            renderCell: createDateRender('createdAt')
         },
         {
             field: 'actions',
             headerName: 'İşlemler',
             width: 150,
-            renderCell: (params) => (
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/categoryTypes/edit/${params.row._id}`);
-                        }}
-                        style={{
-                            backgroundColor: '#4CAF50',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Düzenle
-                    </button>
-                    <button
-                        onClick={async (e) => {
-                            e.stopPropagation();                            
-                            setDeleteId(params.row._id);
-                            setModalOpen(true);
-                        }}
-                        style={{
-                            backgroundColor: '#f44336',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Sil
-                    </button>
-                </div>
-            )
+            renderCell: createActionsRender([
+                {
+                    label: 'Düzenle',
+                    color: '#4CAF50',
+                    onClick: (row) => navigate(`/categoryTypes/edit/${row._id}`)
+                },
+                {
+                    label: 'Sil',
+                    color: '#f44336',
+                    onClick: (row) => {
+                        setDeleteId(row._id);
+                        setModalOpen(true);
+                    }
+                }
+            ])
         }
     ];    
     

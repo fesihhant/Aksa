@@ -113,7 +113,6 @@ const EditCategoryType = () => {
                 <Breadcrumbs breadcrumbs={null} />
                 <form id="formData" onSubmit={handleSubmit} className="edit-user-form">
                     <div className="page-header">
-                        {/* <h1 className='headerClass'>{id ? 'Kategori Düzenle' : 'Yeni Kategori'}</h1> */}
                         <div className="form-actions">
                             <button 
                                 type="submit"

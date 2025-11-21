@@ -64,7 +64,7 @@ router.get('/categorytypes', async (req, res) => {
  // Tüm kayıtları getir
  router.get('/', async (req, res) => {
      try {
-         const categories = await Category.find();
+         const categories = await Category.find().populate('categoryTypeId', 'name');
          res.json({ success: true, categories });
      } catch (error) {
          res.status(500).json({ success: false, message: error.message });

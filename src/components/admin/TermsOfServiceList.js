@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import CListContainer from '../htmlComponent/CListContainer';
 import ModalMessage from '../public/ModalMessage';
 import { useApiCall, useDeleteApiCall } from '../../utils/apiCalls';
-import { substringValue } from '../../utils/utils';
+import { createActionsRender, createDateRender, createTextRender } from '../../utils/columnUtil';
+// import { render } from '@testing-library/react';
 
 const TermsOfServiceList = () => {
     const navigate = useNavigate();
@@ -74,63 +75,41 @@ const TermsOfServiceList = () => {
             field: 'title',
             headerName: 'Title',
             flex: 1,
-            minWidth: 150
+            minWidth: 150,
+            renderCell: createTextRender('title', 100)
         },
         {
             field: 'content',
             headerName: 'Content',
             flex: 1,
-            renderCell: (params) => (
-                <div>{substringValue(params.value, 150)}</div>
-              )
+            renderCell: createTextRender('content', 150)
         },
         {
             field: 'createdAt',
             headerName: 'Kayıt Tarihi',
             width: 150,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString('tr-TR')
+            renderCell: createDateRender('createdAt', 'tr-TR')
         },
         {
             field: 'actions',
             headerName: 'İşlemler',
             width: 150,
-            renderCell: (params) => (
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/termsofservices/edit/${params.row._id}`);
-                        }}
-                        style={{
-                            backgroundColor: '#4CAF50',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Düzenle
-                    </button>
-                    <button
-                        onClick={async (e) => {
-                            e.stopPropagation();                            
-                            setDeleteId(params.row._id);
-                            setModalOpen(true);
-                        }}
-                        style={{
-                            backgroundColor: '#f44336',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Sil
-                    </button>
-                </div>
-            )
+            renderCell: createActionsRender([
+                {
+                    label: 'Düzenle',
+                    color: '#4CAF50',
+                    onClick: (row) => navigate(`/termsofservices/edit/${row._id}`)
+                },
+                {
+                    label: 'Sil',
+                    color: '#f44336',
+                    // disabled: (row) => !row.isActivated,
+                    onClick: (row) => {
+                        setDeleteId(row._id);
+                        setModalOpen(true);
+                    }
+                }
+            ])
         }
     ];    
     

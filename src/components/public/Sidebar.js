@@ -51,6 +51,7 @@ const Sidebar = () => {
                             <a onClick={() => handleMenuClick('/users')}>Kullanıcılar</a>
                             <a onClick={() => handleMenuClick('/projects')} >Projeler</a>
                             <a onClick={() => handleMenuClick('/categories')}>Kategoriler</a>
+                            <a onClick={() => handleMenuClick('/categoryTypes')} >Kategori Türleri</a>
                             <a onClick={() => handleMenuClick('/references')} >Referanslar</a>
                             <a onClick={() => handleMenuClick('/introductionBooklet')} >Tanıtım Kitapçığı</a>
                             <a onClick={() => handleMenuClick('/editAbout')} >Biz Kimiz</a>

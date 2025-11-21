@@ -3,8 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Breadcrumbs from '../public/Breadcrumbs';
 import { useAuth } from '../../context/AuthContext';
 import '../../css/EditUser.css';
+import { useApiCall } from '../../utils/apiCalls';
 import { apiUrl } from '../../utils/utils';
- 
+
 
 const EditCategory = () => {
     const { id } = useParams();
@@ -17,6 +18,20 @@ const EditCategory = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     
+    
+    const [categoryTypes, setCategoryTypes]= useState([]);
+    const { apiData, apiError, apiLoading } = useApiCall('/categoryTypes', 'GET', null, false);
+    
+    useEffect(() => {
+        if (apiData && apiData.categoryTypes) {
+            if (apiData.success && apiData.categoryTypes.length > 0) {    
+                setCategoryTypes(apiData.categoryTypes);
+            } 
+        }
+        if (apiError) {
+            setError((apiData && apiData.message) || 'Kategoriler yüklenirken bir hata oluştu');
+        }
+    }, [apiData, apiError, apiLoading]);
 
     useEffect(() => {
         if (id) {
@@ -74,14 +89,7 @@ const EditCategory = () => {
                 navigate('/login');
                 return;
             }
-
-            const formDataToSend = new FormData();
-            if (id) {
-                formDataToSend.append('id', id);
-            } 
-            formDataToSend.append('name', formData.name);
-            formDataToSend.append('categoryTypeId', formData.categoryTypeId);
-
+            
             const url = id
                 ? `${apiUrl}/categories/${id}`
                 : `${apiUrl}/categories`;
@@ -93,9 +101,9 @@ const EditCategory = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    id: id? id : undefined,
+                    id: id? id : null,
                     name: formData.name,
-                    categoryTypeId: Number(formData.categoryTypeId)
+                    categoryTypeId: formData.categoryTypeId
                 })
             });
 
@@ -103,7 +111,6 @@ const EditCategory = () => {
 
             if (data.success) {
                 navigate('/categories');
-                // window.location.reload();
             } else {
                 setError(data.message || 'Kategori kaydedilirken bir hata oluştu');
             }
@@ -171,7 +178,7 @@ const EditCategory = () => {
                             required
                         />
                     </div>
-                    <div className="form-group">
+                    {/* <div className="form-group">
                         <label htmlFor="categoryTypeId">Kategori Türü</label>
                         <select
                             id="categoryTypeId"
@@ -185,6 +192,26 @@ const EditCategory = () => {
                             <option value={2}>Kullanıcılar</option>
                             <option value={3}>Etkinlikler</option>
                             <option value={4}>Mesafe </option>
+                        </select>
+                    </div> */}
+                    <div className="form-group">
+                        <label htmlFor="categoryTypeId">Kategori Türü</label>
+                        <select
+                            id="categoryTypeId"
+                            name="categoryTypeId"
+                            value={formData.categoryTypeId}
+                            onChange={handleInputChange} 
+                            required
+                            style={{minWidth:150}}
+                        >
+                            <option value="">Seçiniz</option>
+                            {
+                                categoryTypes.map((c) => (
+                                    <option key={c._id} value={c._id}>
+                                        {c.name}
+                                    </option>
+                                ))
+                            }
                         </select>
                     </div>
                 </form>

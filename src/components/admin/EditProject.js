@@ -16,13 +16,13 @@ import { formatPrice, categoryTypeEnum, serverUrl , apiUrl,getCurrencySymbol, ge
  } from '../../utils/utils';
 
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; 
-import { set } from 'mongoose';
+import 'react-quill/dist/quill.snow.css';
+// import { set } from 'mongoose';
 
 const EditProject = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const { id } = useParams();    
+    const { id } = useParams();
 
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -46,12 +46,12 @@ const EditProject = () => {
         imageUrls: [],
         videoUrls: []
     });
-    
+
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    
-    useEffect(() => {        
+
+    useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
             navigate('/login');
@@ -77,17 +77,17 @@ const EditProject = () => {
             setImages([]);
             setImagePreviews([]);
         }
-        }, []);   
+        }, []);
 
-    
+
     const fetchCategories = async () => {
         try {
             const token = localStorage.getItem('token');
-            
+
             const categoryTypeId = categoryTypeEnum.PROJECT; // Faaliyet türü için ID
             const baseUrl = `${apiUrl}/categories/categorytypes`;
             const response = await fetch(`${baseUrl}/?categoryTypeId=${categoryTypeId}`);
-            
+
             const data = await response.json();
             if (data.success) {
                 setCategories(data.categories); // Kategorileri state'e kaydet
@@ -102,7 +102,7 @@ const EditProject = () => {
     const fetchData = async () => {
         try {
             const token = localStorage.getItem('token');
-             
+
             const response = await fetch(`${apiUrl}/projects/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
@@ -115,7 +115,7 @@ const EditProject = () => {
                 setFormData(data.project);
                 setIsActive(data.project.statusType === 'true'); // Checkbox durumunu ayarla
                 setIsVisibleCost(data.project.isVisibleCost === 'true'); // Checkbox durumunu ayarla
-                
+
                 if (data.project.imageUrls && data.project.imageUrls.length > 0) {
                     setImages(data.project.imageUrls.map(url => `${serverUrl}${url}`)); // Resim URL'lerini ayarlıyoruz
                     setImagePreviews(data.project.imageUrls.map(url => `${serverUrl}${url}`)); // Resim önizlemelerini ayarlıyoruz
@@ -137,10 +137,10 @@ const EditProject = () => {
             setError(error.message || 'Sunucu bağlantısı başarısız');
         }
     };
-    
+
     const handleInputChange = (e) => {
-        const { name, value } = e.target;        
-         
+        const { name, value } = e.target;
+
         // Price alanı için parasal değer kontrolü
         if (name === 'projectCost') {
             const formattedPrice = formatPrice(value);
@@ -156,11 +156,11 @@ const EditProject = () => {
             [name]: value
         }));
     };
- 
+
     const handleImageChange = (e) => {
         const files = Array.from(e.target.files);
-        
-         
+
+
         const validFiles = files.filter(file => {
             if (file.size > 5 * 1024 * 1024) {
                 setError('Resim boyutu 5MB\'dan küçük olmalıdır');
@@ -172,7 +172,7 @@ const EditProject = () => {
             }
             return true;
         });
-    
+
         setImages(validFiles);
         setImagePreviews(validFiles.map(file => URL.createObjectURL(file)));
         setError('');
@@ -203,7 +203,7 @@ const EditProject = () => {
         e.preventDefault();
         setLoading(true);
         setError('');
-    
+
         try {
             const token = localStorage.getItem('token');
             if (!token) {
@@ -225,8 +225,8 @@ const EditProject = () => {
                     return;
                 }else {
                     images.forEach(image => formDataToSend.append('images', image)); // Resim dosyaları
-                } 
-            } 
+                }
+            }
             formDataToSend.append('typeofActivityId', formData.typeofActivityId._id || formData.typeofActivityId);
             formDataToSend.append('name', formData.name);
             formDataToSend.append('description', formData.description);
@@ -237,11 +237,11 @@ const EditProject = () => {
             formDataToSend.append('startDate', startDate ? startDate.toISOString() : '');
             formDataToSend.append('endDate', endDate ? endDate.toISOString() : null);
             formDataToSend.append('youtubeUrl', formData.youtubeUrl || '');
-            
+
             const url = formData?._id
                 ? `${apiUrl}/projects/${formData._id}` // Güncelleme için PUT
                 : `${apiUrl}/projects`; // Yeni proje için POST
-    
+
             const response = await fetch(url, {
                 method: formData?._id ? 'PUT' : 'POST',
                 headers: {
@@ -249,9 +249,9 @@ const EditProject = () => {
                 },
                 body: formDataToSend,
             });
-    
+
             const data = await response.json();
-    
+
             if (data.success) {
                 navigate('/projects'); // Projeler sayfasına yönlendirme
             } else {
@@ -264,7 +264,7 @@ const EditProject = () => {
             setLoading(false);
         }
     };
-     
+
     return (
         <div className="home-container">
             <div className="main-content">
@@ -273,7 +273,7 @@ const EditProject = () => {
                     <div className="page-header">
                         {/* <h1 className='headerClass'>{formData ? 'Proje Düzenle' : 'Yeni Proje'}</h1> */}
                         <div className="form-actions">
-                            <button 
+                            <button
                                 type="submit"
                                 form="productForm"
                                 className="submit-button"
@@ -281,8 +281,8 @@ const EditProject = () => {
                             >
                                 {loading ? 'Kaydediliyor...' : (formData?._id ? 'Güncelle' : 'Kaydet')}
                             </button>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 onClick={() => navigate(-1)}
                                 className="cancel-button"
                             >
@@ -293,7 +293,7 @@ const EditProject = () => {
                     <hr></hr>
                     <br></br>
                     {error && <div className="error-message">{error}</div>}
-                     
+
                     <div className="form-group">
                         <label htmlFor="name">Proje Adı</label>
                         <input
@@ -305,14 +305,14 @@ const EditProject = () => {
                             required
                         />
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="typeofActivityId">Faaliyet Türü</label>
                         <select
                             id="typeofActivityId"
                             name="typeofActivityId"
                             value={formData.typeofActivityId._id || formData.typeofActivityId}
-                            onChange={handleInputChange} 
+                            onChange={handleInputChange}
                             required
                         >
                             <option value="">Seçiniz</option>
@@ -339,7 +339,7 @@ const EditProject = () => {
                                 inputMode="decimal"
                                 required
                             />
-                        </div> 
+                        </div>
                         <div className="form-group">
                             <label htmlFor="currencyType">Para Birimi</label>
                             <select
@@ -359,58 +359,58 @@ const EditProject = () => {
                                 }
                             </select>
                         </div>
-                    </div>  
-                    
+                    </div>
+
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="isVisibleCost">Maliyet Görünsün mü?</label>
                             <Checkbox style={{ height: '24px', maxWidth: '24px', color: 'cadetblue' }}
-                                type="checkbox"                            
+                                type="checkbox"
                                 id="isVisibleCost"
                                 name="isVisibleCost"
                                 checked={isVisibleCost}
                                 value={formData.isVisibleCost}
                                 onChange={(e) => setIsVisibleCost(e.target.checked)}
-                            />                     
+                            />
                         </div>
-                    </div> 
-                      
+                    </div>
+
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="statusType">Proje Aktif mi?</label>
                             <Checkbox style={{ height: '24px', maxWidth: '24px', color: 'cadetblue' }}
-                                type="checkbox"                            
+                                type="checkbox"
                                 id="statusType"
                                 name="statusType"
                                 checked={isActive}
                                 value={formData.statusType}
                                 onChange={(e) => setIsActive(e.target.checked)}
-                            />                     
+                            />
                         </div>
-                    </div>  
+                    </div>
 
                     <div className="form-row">
                         <div className="form-group">
                             <label htmlFor="startDate">Başlama Tarihi</label>
-                             <DatePicker 
+                             <DatePicker
                                 required
-                                isClearable 
+                                isClearable
                                 showYearDropdown={true}
                                 showMonthDropdown={true}
                                 dropdownMode="select"
                                 locale={tr}
                                 calendarIconClassname={"calendar-icon"}
                                 dateFormat="dd/MM/yyyy"
-                                selected={startDate} 
+                                selected={startDate}
                                 maxDate={new Date()} // Bugünden önceki tarihleri seçememek için
                                 onChange={(date) => setStartDate(date)} />
                         </div>
                         {!isActive && (
                         <div className="form-group">
                             <label htmlFor="endDate">Bitiş Tarihi</label>
-                            <DatePicker 
+                            <DatePicker
                                 required
-                                isClearable 
+                                isClearable
                                 showYearDropdown={true}
                                 showMonthDropdown={true}
                                 dropdownMode="select"
@@ -426,14 +426,14 @@ const EditProject = () => {
                         </div>)
                         }
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="description">Açıklama</label>
                         <ReactQuill
                             theme="snow"
                             style={{minHeight:'300px'}}
                             value={formData.description}
-                            onChange={value => setFormData((prev) => ({ ...prev, description: value }))}   
+                            onChange={value => setFormData((prev) => ({ ...prev, description: value }))}
                             placeholder="Açıklama giriniz..."
                             modules={editorModules()}
                             formats={editorFormats()}
@@ -447,13 +447,13 @@ const EditProject = () => {
                                     Resim Yükle
                                     <input
                                         type="file"
-                                        id="images"                                        
+                                        id="images"
                                         multiple // Eğer birden fazla resim yüklemek istiyorsanız burayı açabilirsiniz.
                                         name='images'
                                         onChange={handleImageChange}
                                         accept="image/*"
                                         style={{ display: 'none' }}
-                                    />                                    
+                                    />
                                 </label>
                             </div>
                             <div >
@@ -501,7 +501,7 @@ const EditProject = () => {
                             {formData.videoUrls && formData.videoUrls.length > 0 && (
                                 <div style={{ marginTop: 16 }}>
                                     <h4>Proje Videoları:</h4>
-                                    <VideoPlayer 
+                                    <VideoPlayer
                                         videoList={formData.videoUrls}
                                         serverUrl={serverUrl}
                                     />

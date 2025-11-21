@@ -4,7 +4,8 @@ import CListContainer from '../htmlComponent/CListContainer';
 import { useApiCall, useDeleteApiCall } from '../../utils/apiCalls';
 import ModalMessage from '../public/ModalMessage';
 import '../../css/Products.css';
-import { serverUrl, substringValue } from '../../utils/utils';
+import { serverUrl } from '../../utils/utils';
+import {createRelatedValueGetter, createTextRender, createImageRender, createDateRender, createActionsRender , createStatusRender} from '../../utils/columnUtil';
 
 const Projects = () => {
     const navigate = useNavigate();
@@ -75,64 +76,39 @@ const Projects = () => {
             field: 'imageUrls',
             headerName: 'Görsel',
             width: 100,
-            renderCell: (params) => (
-                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    
-                    {params.value && params.value.length > 0 ? (
-                                    <img
-                                        src={`${serverUrl}${params.value[0]}`}
-                                        alt={params.row.name}
-                                        style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
-                                    />
-                                ) : (
-                                    <div style={{ width: '40px', height: '40px', backgroundColor: '#f5f5f5', borderRadius: '4px' }} />
-                                )}
-                </div>
-            )
+            renderCell: createImageRender(serverUrl)
         },
         {
             field: 'name',
             headerName: 'Proje Adı',
             flex: 1,
             minWidth: 150,
-            renderCell: (params) => (
-                <div style={{ fontWeight: 'bold', color: '#333' }}>
-                    {params.value}
-                </div>
-            )
+            renderCell: createTextRender('name', 100)
         },
         {
             field: 'typeofActivityId.name',
             headerName: 'Faaliyet Türü',
             width: 250,
-            valueGetter: (params) => params.row.typeofActivityId?.name || 'Belirtilmemiş'
+            renderCell: createRelatedValueGetter('typeofActivityId.name')
         },      
         {
             field: 'statusType',
             headerName: 'Durumu',
             width: 150,
-            valueFormatter: (params) => {
-                return params.value === 'true' ? 'Aktif' : 'Pasif';
-            }
+            renderCell: createStatusRender('statusType')
         },
         {
             field: 'startDate',
             headerName: 'Başlama Tarihi',
             width: 126,
             type: 'datetime',
-            valueFormatter: (params) => {
-                return new Date(params.value).toLocaleDateString('tr-TR', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                });
-            }
+            renderCell: createDateRender('startDate', 'tr-TR')
         },
         {
             field: 'projectCost',
             headerName: 'Maliyet',
             width: 150,
-            valueFormatter: (params) => {
+            valueFormatter: (params) => { if (!params.value) return '';
                 return new Intl.NumberFormat('tr-TR', {
                     style: 'currency',
                     currency: 'TRY'
@@ -143,31 +119,22 @@ const Projects = () => {
             field: 'actions',
             headerName: 'İşlemler',
             width: 150,
-            renderCell: (params) => (
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            // navigate('/projectdetail', { state: {projectData: params.row }});
-                            navigate(`/projects/edit/${params.row._id}`);
-
-                        }}
-                        className='submit-button'
-                    >
-                        Düzenle
-                    </button>
-                    <button
-                        onClick={async (e) => {
-                            e.stopPropagation();
-                            setDeleteId(params.row._id);
-                            setModalOpen(true);
-                        }}
-                        className='cancel-button'
-                    >
-                        Sil
-                    </button>
-                </div>
-            )
+            renderCell: createActionsRender([
+                {
+                    label: 'Düzenle',
+                    color: '#4CAF50',
+                    onClick: (row) => navigate(`/projects/edit/${row._id}`)
+                },
+                {
+                    label: 'Sil',
+                    color: '#f44336',
+                    // disabled: (row) => !row.isActivated,
+                    onClick: (row) => {
+                        setDeleteId(row._id);
+                        setModalOpen(true);
+                    }
+                }
+            ])
         }
     ];
     {loading && (

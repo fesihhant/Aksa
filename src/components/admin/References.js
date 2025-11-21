@@ -4,6 +4,7 @@ import CListContainer from '../htmlComponent/CListContainer';
 import { useDeleteApiCall } from '../../utils/apiCalls';
 import '../../css/Products.css';
 import { apiUrl, serverUrl } from '../../utils/utils';
+import { createImageRender, createTextRender, createActionsRender } from '../../utils/columnUtil';
 import ModalMessage from '../public/ModalMessage';
 
 const References = () => {
@@ -93,61 +94,66 @@ const References = () => {
             field: 'imageUrl',
             headerName: 'Görsel',
             width: 100,
-            renderCell: (params) => (
-                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    {params.value ? (
-                        <img
-                            src={`${serverUrl}${params.value}`}
-                            alt={params.row.name}
-                            style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
-                        />
-                    ) : (
-                        <div style={{ width: '40px', height: '40px', backgroundColor: '#f5f5f5', borderRadius: '4px' }} />
-                    )}
-                </div>
-            )
+            renderCell: createImageRender(serverUrl)
         },
         {
             field: 'name',
             headerName: 'Referans Adı',
             flex: 1,
-            minWidth: 200
+            minWidth: 200,
+            renderCell: createTextRender('name')
         }, 
         {
             field: 'description',
             headerName: 'Açıklama',
             flex: 1,
-            minWidth: 200
+            minWidth: 200,
+            renderCell: createTextRender('description', 300)
         },
         {
             field: 'actions',
             headerName: 'İşlemler',
             width: 150,
-            renderCell: (params) => (
+            renderCell: createActionsRender([
+                {
+                    label: 'Düzenle',
+                    color: '#4CAF50',
+                    onClick: (row) => navigate(`/referencedetail/edit/${row._id}`)
+                },
+                {
+                    label: 'Sil',
+                    color: '#f44336',
+                    onClick: (row) => {
+                        setDeleteId(row._id);
+                        setModalOpen(true);
+                    }
+                }
+            ])
+            // renderCell: (params) => (
             
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            // navigate(`/reference/edit/${params.row._id}`);
-                            navigate('/referencedetail', { state: {referenceData: params.row }});
-                        }}
-                        className='submit-button'
-                    >
-                        Düzenle
-                    </button>
-                    <button
-                        onClick={async (e) => {
-                            e.stopPropagation();
-                            setDeleteId(params.row._id);
-                            setModalOpen(true);
-                        }}
-                        className='cancel-button'
-                    >
-                        Sil
-                    </button>
-                </div>
-            )
+            //     <div style={{ display: 'flex', gap: '8px' }}>
+            //         <button
+            //             onClick={(e) => {
+            //                 e.stopPropagation();
+            //                 // navigate(`/reference/edit/${params.row._id}`);
+            //                 navigate('/referencedetail', { state: {referenceData: params.row }});
+            //             }}
+            //             className='submit-button'
+            //         >
+            //             Düzenle
+            //         </button>
+            //         <button
+            //             onClick={async (e) => {
+            //                 e.stopPropagation();
+            //                 setDeleteId(params.row._id);
+            //                 setModalOpen(true);
+            //             }}
+            //             className='cancel-button'
+            //         >
+            //             Sil
+            //         </button>
+            //     </div>
+            // )
         }
     ];
 

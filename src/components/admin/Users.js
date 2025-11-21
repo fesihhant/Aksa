@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext'; 
+import { useAuth } from '../../context/AuthContext';
 import CListContainer from '../htmlComponent/CListContainer';
 import ModalMessage from '../public/ModalMessage';
 import { useApiCall, useDeleteApiCall } from '../../utils/apiCalls';
 import { serverUrl } from '../../utils/utils';
+import {
+    createSafeRenderCell,
+    createAvatarRender,
+    createStatusRender,
+    createDateRender,
+    createLinkRender,
+    createActionsRender} from '../../utils/columnUtil';
 
 const Users = () => {
     const navigate = useNavigate();
@@ -14,21 +21,21 @@ const Users = () => {
     const [error, setError] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
 
-    const { apiData, apiError, apiLoading } = useApiCall('/users', 'GET', null, true);    
+    const { apiData, apiError, apiLoading } = useApiCall('/users', 'GET', null, true);
     const { apiSuccess, apiError: deleteError, apiLoading: deleteLoading, deleteData } = useDeleteApiCall();
-    
+
     useEffect(() => {
         if (apiData && apiData.users) {
-            if (apiData.success && apiData.users.length > 0) {    
+            if (apiData.success && apiData.users.length > 0) {
                 setData(apiData.users);
-            } 
+            }
         }
         if (apiError) {
             setError(apiData.message || 'Veriler yüklenirken bir hata oluştu');
         }
         setLoading(apiLoading);
     }, [apiData, apiError, apiLoading]);
-    
+
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
@@ -51,7 +58,7 @@ const Users = () => {
             users.map(user =>
                 user._id === itemId ? { ...user, isActivated: false } : user
             ));
-            
+
         } else if (deleteError) {
             setError(deleteError);
         }
@@ -79,19 +86,7 @@ const Users = () => {
             field: 'avatar',
             headerName: 'Avatar',
             width: 120,
-            renderCell: (params) => (
-                <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <img
-                        src={params.row.avatar ? `${serverUrl}${params.row.avatar}` : `${serverUrl}/uploads/avatars/default.jpg`}
-                        alt={params.row.fullName}
-                        style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '50%' }}
-                        onError={(e) => {
-                            console.error('Avatar yükleme hatası:', e);
-                            e.target.src = `${serverUrl}/uploads/avatars/default.jpg`;
-                        }}
-                    />
-                </div>
-            )
+            renderCell: createAvatarRender(serverUrl)
         },
         {
             field: 'fullName',
@@ -103,74 +98,47 @@ const Users = () => {
             field: 'email',
             headerName: 'E-posta',
             flex: 1,
-            minWidth: 200
+            minWidth: 200,
+            renderCell: createLinkRender('email')
         },
         {
             field: 'role',
             headerName: 'Yetki',
             width: 120,
-            valueGetter: (params) => params.row.role || 'user'
+            renderCell:  createSafeRenderCell((params) => params.row.role || 'user')
         },
         {
             field: 'isActivated',
             headerName: 'Durumu',
             width: 120,
-            // valueGetter: (params) => params.row.isActivated ?  'Aktif' : 'Pasif',
-            renderCell: (params) => (   
-                <span style={{ color: params.row.isActivated ? 'green' : 'red' }}>
-                    {params.row.isActivated ? 'Aktif' : 'Pasif'}
-                </span>
-            )
+            renderCell: createStatusRender('isActivated')
         },
         {
             field: 'createdAt',
             headerName: 'Kayıt Tarihi',
             width: 150,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString('tr-TR')
+            renderCell: createDateRender('createdAt', 'tr-TR')
         },
         {
             field: 'actions',
             headerName: 'İşlemler',
             width: 150,
-            renderCell: (params) => (
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/users/edit/${params.row._id}`);
-                        }}
-                        style={{
-                            backgroundColor: '#4CAF50',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Düzenle
-                    </button>
-                   { params.row.isActivated && 
-                    <button
-                        onClick={async (e) => {
-                            e.stopPropagation();                            
-                            setDeleteId(params.row._id);
-                            setModalOpen(true);
-                        }}
-                        style={{
-                            backgroundColor: '#f44336',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Sil
-                    </button>
+            renderCell: createActionsRender([
+                {
+                    label: 'Düzenle',
+                    color: '#4CAF50',
+                    onClick: (row) => navigate(`/users/edit/${row._id}`)
+                },
+                {
+                    label: 'Sil',
+                    color: '#f44336',
+                    disabled: (row) => !row.isActivated,
+                    onClick: (row) => {
+                        setDeleteId(row._id);
+                        setModalOpen(true);
+                    }
                 }
-                </div>
-            )
+            ])
         }
     ];
 
@@ -183,24 +151,24 @@ const Users = () => {
 
     return (
         <>
-            <CListContainer pageName={'users'}  
-                error={error} 
-                searchTerm={searchTerm} 
-                handleSearch={handleSearch} 
-                url={'/users/new'} 
-                filteredData={filteredData} 
-                columns={columns} 
-                loading={loading} 
+            <CListContainer pageName={'users'}
+                error={error}
+                searchTerm={searchTerm}
+                handleSearch={handleSearch}
+                url={'/users/new'}
+                filteredData={filteredData}
+                columns={columns}
+                loading={loading}
                 pageSize={10}
-            />        
+            />
             <ModalMessage
                 open={modalOpen}
                 type="warning"
                 message="Bu kaydı silmek istediğinize emin misiniz?"
                 onConfirm={handleModalConfirm}
                 onCancel={handleModalCancel}
-            />  
-        </>   
+            />
+        </>
     );
 };
 

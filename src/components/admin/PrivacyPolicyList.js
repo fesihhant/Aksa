@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import CListContainer from '../htmlComponent/CListContainer';
 import ModalMessage from '../public/ModalMessage';
 import { useApiCall, useDeleteApiCall } from '../../utils/apiCalls';
-import { substringValue } from '../../utils/utils';
+import { createTextRender, createActionsRender, createDateRender } from '../../utils/columnUtil';
+
 
 const PrivacyPolicyList = () => {
     const navigate = useNavigate();
@@ -72,65 +73,43 @@ const PrivacyPolicyList = () => {
     const columns = [        
         {
             field: 'title',
-            headerName: 'Title',
+            headerName: 'Başlık',
             flex: 1,
-            minWidth: 150
+            minWidth: 150,
+            renderCell: createTextRender('title', 200)
         },
         {
             field: 'content',
-            headerName: 'Content',
+            headerName: 'Açıklama',
             flex: 1,
-            renderCell: (params) => (
-                <div>{substringValue(params.value, 150)}</div>
-              )
+            renderCell: createTextRender('content', 300)
         },
         {
             field: 'createdAt',
             headerName: 'Kayıt Tarihi',
             width: 150,
-            valueFormatter: (params) => new Date(params.value).toLocaleDateString('tr-TR')
+            renderCell: createDateRender('createdAt')
         },
         {
             field: 'actions',
             headerName: 'İşlemler',
             width: 150,
-            renderCell: (params) => (
-                <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/privacypolicies/edit/${params.row._id}`);
-                        }}
-                        style={{
-                            backgroundColor: '#4CAF50',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Düzenle
-                    </button>
-                    <button
-                        onClick={async (e) => {
-                            e.stopPropagation();                            
-                            setDeleteId(params.row._id);
-                            setModalOpen(true);
-                        }}
-                        style={{
-                            backgroundColor: '#f44336',
-                            color: 'white',
-                            border: 'none',
-                            padding: '5px 10px',
-                            borderRadius: '4px',
-                            cursor: 'pointer'
-                        }}
-                    >
-                        Sil
-                    </button>
-                </div>
-            )
+            renderCell: createActionsRender([
+                {
+                    label: 'Düzenle',
+                    color: '#4CAF50',
+                    onClick: (row) => navigate(`/privacypolicies/edit/${row._id}`)
+                },
+                {
+                    label: 'Sil',
+                    color: '#f44336',
+                //   disabled: (row) => !row.isActivated,
+                    onClick: (row) => {
+                        setDeleteId(row._id);
+                        setModalOpen(true);
+                    }
+                }
+            ])
         }
     ];    
     

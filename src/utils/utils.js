@@ -1,22 +1,3 @@
-import CryptoJS from "crypto-js";
-
-export const EncryptedOrDecryptedJSFormat =(value, isEncrypted = true) =>{
-    const secretKey = process.env.CRYPTO_JS_SECRET_KEY; // Hem frontend hem backend aynı anahtarı kullanmalı
-
-    if (isEncrypted) {
-        // Şifrele
-        const plainText = JSON.stringify(value);
-        const encrypted = CryptoJS.AES.encrypt(plainText, secretKey).toString();
-        return encrypted;
-    } else {
-        const bytes = CryptoJS.AES.decrypt(value, secretKey);
-        const decrypted = bytes.toString(CryptoJS.enc.Utf8);
-        const parsed = JSON.parse(decrypted);
-        return parsed;
-    }
-    
-}
-
 export const formatPrice = (value) => {
     // Sayı ve nokta dışındaki karakterleri temizle
     let cleanValue = value.replace(/[^0-9.]/g, '');
