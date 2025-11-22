@@ -1,8 +1,8 @@
 import React from 'react';
 import Breadcrumbs from '../public/Breadcrumbs';
 
-import CListPageHeader from '../htmlComponent/CListPageHeader';
-import CDataGrid from '../htmlComponent/CDataGrid';
+import CListPageHeader from './CListPageHeader';
+import CDataGrid from './CDataGrid';
 import { getPageTitleText } from '../../utils/utils';
 
 // import '../../css/HomePage.css';

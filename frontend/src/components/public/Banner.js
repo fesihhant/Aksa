@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useNavigate, useLocation  } from 'react-router-dom';
-import Sidebar from '../public/Sidebar';
+import Sidebar from './Sidebar';
 import '../../css/Banner.css';
 import { changeModalStyle } from '../../utils/loginUtil';
 import { apiUrl } from '../../utils/utils';

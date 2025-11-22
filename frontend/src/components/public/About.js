@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Breadcrumbs from '../public/Breadcrumbs';
+import Breadcrumbs from './Breadcrumbs';
 import { useApiCall } from '../../utils/apiCalls';
 import {serverUrl} from '../../utils/utils';
 import '../../css/HomePage.css';

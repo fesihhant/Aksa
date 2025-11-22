@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Helmet} from 'react-helmet-async';
 
-import Breadcrumbs from '../public/Breadcrumbs';
+import Breadcrumbs from './Breadcrumbs';
 import CHelmet from '../htmlComponent/CHelmet';
 import CCrousel from '../htmlComponent/CCrousel';
 import '../../css/HomePage.css';

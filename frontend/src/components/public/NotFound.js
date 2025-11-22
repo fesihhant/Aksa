@@ -1,7 +1,7 @@
 // src/components/public/NotFound.js
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import Breadcrumbs from '../public/Breadcrumbs';
+import Breadcrumbs from './Breadcrumbs';
 
 const NotFound = () => {  
    return (

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet} from 'react-helmet-async';
 
-import Breadcrumbs from '../public/Breadcrumbs';
+import Breadcrumbs from './Breadcrumbs';
 import { apiUrl } from '../../utils/utils';
 
 import '../../css/HomePage.css';   
