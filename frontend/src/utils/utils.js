@@ -127,7 +127,7 @@ export const categoryTypeEnum = {
     DISTANCE:4
 };
 
-export const serverUrl = 'http://localhost:5000';
+export const serverUrl = 'https://aksa-insaat.onrender.com';
 export const apiUrl = serverUrl + '/api';
 export const apiUrlPath= (apiName) =>{
     return (apiUrl + '/' + apiName );
