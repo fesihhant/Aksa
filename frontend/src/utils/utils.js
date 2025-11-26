@@ -127,7 +127,7 @@ export const categoryTypeEnum = {
     DISTANCE:4
 };
 
-export const serverUrl = process.env.REACT_APP_IS_LOCAL === 'true' ? 'http://localhost:5000' : 'https://aksa-insaat.onrender.com';
+export const serverUrl = process.env.REACT_APP_IS_LOCAL === 'true' ? process.env.REACT_APP_SERVER_URL_LOCAL : process.env.REACT_APP_SERVER_URL;
 export const apiUrl = serverUrl + '/api';
 export const apiUrlPath= (apiName) =>{
     return (apiUrl + '/' + apiName );

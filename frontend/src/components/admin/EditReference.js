@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Breadcrumbs from '../public/Breadcrumbs';
-import { apiUrl } from '../../utils/utils';
+import { apiUrl, serverUrl } from '../../utils/utils';
 import '../../css/HomePage.css';
 
 const EditReference = () => {
@@ -28,7 +28,7 @@ const EditReference = () => {
             });
 
             if (referenceData.imageUrl) {
-                setImagePreview(`http://localhost:5001${referenceData.imageUrl}`);
+                setImagePreview(`${serverUrl}${referenceData.imageUrl}`);
             }
         } else {
             setFormData({

@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
     try {
         console.log('In DB Config - IS_LOCAL:', process.env.IS_LOCAL);
-        const url = process.env.IS_LOCAL === 'true' ? process.env.MONGODB_URI : process.env.MONGODB_URI_LIVE;
+        const url = process.env.IS_LOCAL === 'true' ? process.env.MONGODB_URI : process.env.MONGODB_URI_PROD;
         console.log('Connecting to MongoDB at:', url);
         const conn = await mongoose.connect(url, {
             useNewUrlParser: true,

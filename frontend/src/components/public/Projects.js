@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import Breadcrumbs from './Breadcrumbs';
 import { useApiCall } from '../../utils/apiCalls';
 
-import {substringValue} from '../../utils/utils';
+import {substringValue, serverUrl} from '../../utils/utils';
 
 const Projects = () => {
     const navigate = useNavigate();
@@ -89,9 +89,9 @@ const Projects = () => {
                                 <div key={p.id} className="project-card">
                                     <div className="project-image">
                                         {p.imageUrls && p.imageUrls.length > 0 ? (
-                                            <img loading="lazy" alt={p.name} src={`http://localhost:5001${p.imageUrls[0]}`} />
+                                            <img loading="lazy" alt={p.name} src={`${serverUrl}/${p.imageUrls[0]}`} />
                                         ) : (
-                                            <img loading="lazy" alt={p.name} src={`http://localhost:5001/uploads/projects/default.png`} />
+                                            <img loading="lazy" alt={p.name} src={`${serverUrl}/uploads/projects/default.png`} />
                                         )}
                                     </div>
                                     <div className="project-content">

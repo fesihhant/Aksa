@@ -288,8 +288,9 @@ router.post('/forget-password', async (req, res) => {
         expireDate.setHours(expireDate.getHours() + 1); 
         
         //token şifrele
+        const webLink = process.env.IS_LOCAL === 'true' ? process.env.LOCAL_WEB_ADDRESS : process.env.PROD_WEB_ADDRESS;
         const resetToken = EncryptedOrDecryptedJSFormat(user._id.toString(), true);
-        const resetLink = `${process.env.LOCAL_WEB_ADDRESS}/reset-password/${encodeURIComponent(resetToken)}`;
+        const resetLink = `${webLink}/reset-password/${encodeURIComponent(resetToken)}`;
 
         const userId = user._id;
         const existingUserToken = await UserResetToken.findOne({ userId: userId });
@@ -391,8 +392,9 @@ router.post('/send-activation', async (req, res) => {
         }
 
        //token şifrele
+        const webLink = process.env.IS_LOCAL === 'true' ? process.env.LOCAL_WEB_ADDRESS : process.env.PROD_WEB_ADDRESS;
         const resetToken = EncryptedOrDecryptedJSFormat(userModel._id.toString(), true);
-        const resetLink = `${process.env.LOCAL_WEB_ADDRESS}/user-activated/${encodeURIComponent(resetToken)}`;
+        const resetLink = `${webLink}/user-activated/${encodeURIComponent(resetToken)}`;
 
         const tokenModel = userModel;
         tokenModel.activationToken = resetToken;
