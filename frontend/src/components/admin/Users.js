@@ -42,8 +42,8 @@ const Users = () => {
     };
 
     const filteredData = users.filter(user =>
-        user.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+       (user.fullName && user.fullName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+       (user.email&& user.email.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     //#region "state management for delete operation"

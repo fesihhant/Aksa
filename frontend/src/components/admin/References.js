@@ -84,9 +84,9 @@ const References = () => {
         setSearchTerm(e.target.value);
     };
 
-    const filteredData = references.filter(reference =>
-        reference.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        reference.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredData = references.filter(p =>
+       (p.name && p.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+       (p.description && p.description.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     const columns = [

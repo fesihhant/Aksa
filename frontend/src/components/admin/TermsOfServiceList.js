@@ -33,8 +33,8 @@ const TermsOfServiceList = () => {
     };
 
     const filteredData = data.filter(p =>
-        p.title.toLowerCase().includes(searchTerm.toLowerCase()) 
-        || p.content.toLowerCase().includes(searchTerm.toLowerCase())
+        (p.title && p.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+        (p.content && p.content.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
     //#region "state management for delete operation"

@@ -57,7 +57,7 @@ const SocialMediaList = () => {
     };
 
     const filteredData = dataList.filter(p => 
-    p.name.toLowerCase().includes(searchTerm.toLowerCase())
+        p.name && p.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
   
       
