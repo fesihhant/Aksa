@@ -1,13 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.ffe0797b.css",
-    "main.js": "/static/js/main.d5095d35.js",
+    "main.css": "/static/css/main.36b7a7c2.css",
+    "main.js": "/static/js/main.b99b1c59.js",
+    "static/media/aksa-insaat.png": "/static/media/aksa-insaat.0ef96c1bd535aacec0c3.png",
     "index.html": "/index.html",
-    "main.ffe0797b.css.map": "/static/css/main.ffe0797b.css.map",
-    "main.d5095d35.js.map": "/static/js/main.d5095d35.js.map"
+    "main.36b7a7c2.css.map": "/static/css/main.36b7a7c2.css.map",
+    "main.b99b1c59.js.map": "/static/js/main.b99b1c59.js.map"
   },
   "entrypoints": [
-    "static/css/main.ffe0797b.css",
-    "static/js/main.d5095d35.js"
+    "static/css/main.36b7a7c2.css",
+    "static/js/main.b99b1c59.js"
   ]
 }
