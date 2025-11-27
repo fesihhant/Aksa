@@ -32,8 +32,8 @@ const Categories = () => {
         setSearchTerm(e.target.value);
     };
 
-    const filteredData = categories.filter(categori =>
-        categori.name.toLowerCase().includes(searchTerm.toLowerCase()) 
+    const filteredData = categories.filter(p =>
+        p.name && p.name.toLowerCase().includes(searchTerm.toLowerCase()) 
     );
  
     //#region "state management for delete operation"
